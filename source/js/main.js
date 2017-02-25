@@ -15,11 +15,8 @@ const DEBUG = true;
 var lastFrameTimeMs = 0,
     delta = 0;
 
-//DOM Vars
-var main, can, ctx, ui;
-
 //Game Vars
-var currentModule, game_size;
+var currentModule;
 
 
 /**
@@ -45,6 +42,18 @@ function init() {
 
   AceVox.ui.style.width = AceVox.game_size[0]+"px";
   AceVox.ui.style.height = AceVox.game_size[1]+"px";
+
+  var gl = AceVox.can.getContext( 'webgl2', { antialias: false } );
+  var isWebGL2 = !!gl;
+  if(!isWebGL2) {
+      AceVox.ui.innerHTML = `WebGL 2 is not available. <br>
+      See <a href="https://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">How to get a WebGL 2 implementation</a> <br>
+      <u>(TL:DR install Google Chrome)</u>`;
+      AceVox.ui.className += " webgl2-fail";
+      return;
+  }
+
+  AceVox.gl = gl;
 
   //Initialize game
   currentModule = new BasicModule();
