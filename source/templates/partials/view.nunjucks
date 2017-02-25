@@ -1,1 +1,5 @@
 <!-- Provides Interactive Canvas View -->
+<div class="main-container">
+  <canvas class="main-view"></canvas>
+  <div class="main-ui"></div>
+</div>
