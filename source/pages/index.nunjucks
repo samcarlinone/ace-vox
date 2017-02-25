@@ -1,0 +1,6 @@
+<!-- index.nunjucks -->
+{% extends "layout.nunjucks" %}
+
+{% block content %}
+  {% include "partials/view.nunjucks" %}
+{% endblock %}
