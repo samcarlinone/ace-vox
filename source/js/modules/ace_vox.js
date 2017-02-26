@@ -3,7 +3,7 @@
  *
  * Variable List
  * - DOM: main, ui, can, gl
- * - Game: game_size
+ * - Game: game_size, shader_cache
  */
 class AceVox {
   constructor() {
@@ -11,4 +11,5 @@ class AceVox {
   }
 }
 
+//This is a singleton
 export default (new AceVox);

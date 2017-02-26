@@ -1,4 +1,5 @@
 import {BasicModule} from './modules/basic_module.js';
+import ShaderCache from './modules/shader_cache.js';
 import AceVox from './modules/ace_vox.js';
 //import * as Victor from 'Victor';
 
@@ -43,6 +44,7 @@ function init() {
   AceVox.ui.style.width = AceVox.game_size[0]+"px";
   AceVox.ui.style.height = AceVox.game_size[1]+"px";
 
+  //Initialize WebGL2
   var gl = AceVox.can.getContext( 'webgl2', { antialias: false } );
   var isWebGL2 = !!gl;
   if(!isWebGL2) {
@@ -55,6 +57,16 @@ function init() {
 
   AceVox.gl = gl;
 
+  //Load Resources
+  AceVox.shader_cache = ShaderCache.load(["trs"], loadingComplete, (err) => {
+    console.error(err);
+    
+    if(!DEBUG)
+      alert("A loading error has occured, try reloading. If you see this message again check network or contact support.");
+  });
+}
+
+function loadingComplete() {
   //Initialize game
   currentModule = new BasicModule();
 

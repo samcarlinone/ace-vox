@@ -33,7 +33,7 @@ gulp.task('nunjucks', function() {
 });
 
 gulp.task('misc', function () {
-    return gulp.src('source/misc/*')
+    return gulp.src('source/misc/**/*.*')
     .pipe(gulp.dest('public'));
 });
 
