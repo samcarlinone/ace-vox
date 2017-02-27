@@ -60,13 +60,14 @@ function init() {
   //Load Resources
   AceVox.shader_cache = ShaderCache.load(["trs"], loadingComplete, (err) => {
     console.error(err);
-    
+
     if(!DEBUG)
       alert("A loading error has occured, try reloading. If you see this message again check network or contact support.");
   });
 }
 
 function loadingComplete() {
+  console.log("Loading complete");
   //Initialize game
   currentModule = new BasicModule();
 
@@ -75,11 +76,11 @@ function loadingComplete() {
 }
 
 function update(delta) {
-    //Update
+  currentModule.update(delta);
 }
 
 function render() {
-
+  currentModule.render();
 }
 
 function panic() {
