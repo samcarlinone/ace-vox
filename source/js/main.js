@@ -1,6 +1,7 @@
 import {BasicModule} from './modules/basic_module.js';
 import ShaderCache from './modules/shader_cache.js';
 import AceVox from './modules/ace_vox.js';
+import Blocks from './modules/blocks.js';
 //import * as Victor from 'Victor';
 
 /**
@@ -25,6 +26,8 @@ var currentModule;
  */
 window.onload = function() {
   init();
+
+  console.log(Blocks);
 
   if(DEBUG)
     window.AceVox = AceVox;
