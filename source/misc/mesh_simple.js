@@ -32,11 +32,12 @@ const ROT_MASK    = 0b0111000000000000;
  * Passed in chunk data to convert to meshes
  *
  * @param  {Object} msg id, and dat {Uint16Array} members
- * @return {Object}     contains id, as well as pos, tex, light {Float32Array} members
+ * @return {Object}     contains id, as well as pos, tex, light {Float32Array} members and dat {Uint16Array}
  */
 self.onmessage = function(msg) {
   var pos = [];
   var tex = [];
+  var light = [];
 
   for(var x=0; x<64; x++) {
     for(var y=0; y<64; y++) {
@@ -58,7 +59,7 @@ self.onmessage = function(msg) {
 
                   x,   y, z+1,
                 x+1, y+1, z+1,
-                  x, y+1, z+1,
+                  x, y+1, z+1
               ]);
 
               var sideTex = 0;
@@ -97,7 +98,17 @@ self.onmessage = function(msg) {
 
                 0, 0, sideTex,
                 1, 1, sideTex,
-                0, 1, sideTex,
+                0, 1, sideTex
+              ]);
+
+              light = light.concat([
+                1, 1, 1,
+                1, 1, 1,
+                1, 1, 1,
+
+                1, 1, 1,
+                1, 1, 1,
+                1, 1, 1
               ]);
             }
           }
@@ -106,5 +117,20 @@ self.onmessage = function(msg) {
     }
   }
 
-    self.postMessage({aTopic:'do_sendMainArrBuff', aBuf:aBuf}, [aBuf]);
+  pos = new Float32Array(pos);
+  tex = new Float32Array(tex);
+  light = new Float32Array(light);
+
+  self.postMessage({
+    id:msg.id,
+    dat:msg.dat,
+    pos: pos,
+    tex: tex,
+    light: light
+  }, [
+    msg.dat,
+    pos,
+    tex,
+    light
+  ]);
 }
