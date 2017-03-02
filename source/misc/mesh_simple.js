@@ -31,10 +31,12 @@ const ROT_MASK    = 0b0111000000000000;
 /**
  * Passed in chunk data to convert to meshes
  *
- * @param  {Object} msg id, and dat {Uint16Array} members
- * @return {Object}     contains id, as well as pos, tex, light {Float32Array} members and dat {Uint16Array}
+ * @param  {Object} msg id, and dat {Buffer} members
+ * @return {Object}     contains id, as well as pos, tex, light {Buffer} members and dat {Buffer}
  */
 self.onmessage = function(msg) {
+  var data = new Uint16Array(msg.data.dat);
+
   var pos = [];
   var tex = [];
   var light = [];
@@ -42,29 +44,29 @@ self.onmessage = function(msg) {
   for(var x=0; x<64; x++) {
     for(var y=0; y<64; y++) {
       for(var z=0; z<64; z++) {
-        var p = x + y*64 + z*4096;
+        var p = x + z*64 + y*4096;
         //Check if not air
-        if(msg.dat[p] < AIR) {
-          var val = msg.dat[p] & BLOCK_MASK;
+        if(data[p] < AIR) {
+          var val = data[p] & BLOCK_MASK;
           //Check if cube with face unneeded or custom mesh
           if(Blocks[val].cube) {
             //Check all faces
 
             //Top
-            if(z == 63 || msg.dat[p + 4096] >= AIR) {
+            if(y == 63 || data[p + 4096] >= AIR) {
               pos = pos.concat([
-                  x,   y, z+1,
-                x+1,   y, z+1,
+                  x, y+1,   z,
+                x+1, y+1,   z,
                 x+1, y+1, z+1,
 
-                  x,   y, z+1,
+                  x, y+1,   z,
                 x+1, y+1, z+1,
                   x, y+1, z+1
               ]);
 
               var sideTex = 0;
 
-              switch(msg.dat[p] & ROT_MASK) {
+              switch(data[p] & ROT_MASK) {
                 //N
                 case 0:
                   sideTex = Blocks[val].texId[1];
@@ -117,20 +119,26 @@ self.onmessage = function(msg) {
     }
   }
 
+  if(pos.length == 0) {
+    pos = [0, 0, 0];
+    tex = [0, 0, 0];
+    light = [0, 0, 0];
+  }
+
   pos = new Float32Array(pos);
   tex = new Float32Array(tex);
   light = new Float32Array(light);
 
   self.postMessage({
-    id:msg.id,
-    dat:msg.dat,
+    id: msg.data.id,
+    dat: data,
     pos: pos,
     tex: tex,
     light: light
   }, [
-    msg.dat,
-    pos,
-    tex,
-    light
+    data.buffer,
+    pos.buffer,
+    tex.buffer,
+    light.buffer
   ]);
 }

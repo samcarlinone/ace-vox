@@ -18,7 +18,7 @@ class MeshBuilder {
     this.simpleWorkers = [new SimpleWorker(), new SimpleWorker()];
 
     for(var i=0; i<this.simpleWorkers.length; i++)
-      this.simpleWorkers[i].addEventListener('message', (msg) => {this.jobComplete(msg)});
+      this.simpleWorkers[i].w.addEventListener('message', (msg) => {this.jobComplete(msg)});
 
     this.idle = 2;
   }
@@ -53,10 +53,10 @@ class MeshBuilder {
       if(this.simpleWorkers[i].job == -1) {
         this.simpleWorkers[i].job = mesh.id;
 
-        this.simpleWorkers[i].postMessage(
+        this.simpleWorkers[i].w.postMessage(
             {
                 id: mesh.id,
-                dat: array // Data reference
+                dat: mesh.chunk.data.buffer // Data reference
             },
             [
                 mesh.chunk.data.buffer // Data
@@ -67,6 +67,8 @@ class MeshBuilder {
         mesh.chunk.locked = true;
         mesh.processing = true;
 
+        console.log("Processing mesh");
+
         return;
       }
     }
@@ -75,13 +77,13 @@ class MeshBuilder {
 
   /**
    * Called when thread completes, calls update when done
-   * @param  {Object} msg contains id, as well as pos, tex, light {Float32Array} members and dat {Uint16Array}
+   * @param  {Object} msg contains id, as well as pos, tex, light {Buffer} members and dat {Buffer}
    */
   jobComplete(msg) {
     var worker;
 
     for(var i=0; i<this.simpleWorkers.length; i++) {
-      if(this.simpleWorkers[i].job = msg.id) {
+      if(this.simpleWorkers[i].job == msg.data.id) {
         worker = this.simpleWorkers[i];
         break;
       }
@@ -90,23 +92,26 @@ class MeshBuilder {
     var mesh;
 
     for(var i=0; i<this.meshes.length; i++) {
-      if(this.meshes[i].id == msg.id) {
+      if(this.meshes[i].id == msg.data.id) {
         mesh = this.meshes[i];
         break;
       }
     }
 
     this.idle += 1;
+    worker.job = -1;
 
     mesh.processing = false;
     mesh.chunk.dirty = false;
     mesh.chunk.locked = false;
 
-    mesh.chunk.data = msg.dat;
+    mesh.chunk.data = new Uint16Array(msg.data.dat);
 
-    mesh.pos = msg.pos;
-    mesh.tex = msg.tex;
-    mesh.light = msg.light;
+    mesh.pos = new Float32Array(msg.data.pos);
+    mesh.tex = new Float32Array(msg.data.tex);
+    mesh.light = new Float32Array(msg.data.light);
+
+    mesh.changed();
 
     this.update();
   }
@@ -118,7 +123,7 @@ class MeshBuilder {
    * @return {ChunkMesh}
    */
   createMesh(chunk) {
-    this.meshes.append(new Mesh(this.curID, chunk));
+    this.meshes.push(new ChunkMesh(this.curID, chunk));
     this.curID += 1;
     return this.meshes[this.meshes.length-1];
   }

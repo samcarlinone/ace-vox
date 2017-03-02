@@ -1,3 +1,5 @@
+import AceVox from './ace_vox.js';
+
 /**
  * Class containing mesh data for a given chunk
  * -chunk, {Chunk} the chunk this mesh represents
@@ -12,6 +14,7 @@
  */
 export class ChunkMesh {
   constructor(id, chunk) {
+    //Data properties
     this.chunk = chunk;
     this.id = id;
 
@@ -21,5 +24,30 @@ export class ChunkMesh {
 
     this.position = {x: 0, y: 0, z:0};
     this.scale = {x: 1, y: 1, z: 1};
+
+    //WebGL things
+    var gl = AceVox.gl;
+
+    this.vao = gl.createVertexArray();
+    gl.bindVertexArray(this.vao);
+
+    this.vbo = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
+    gl.bufferData(gl.ARRAY_BUFFER, this.pos, gl.DYNAMIC_DRAW);
+
+    var pos_location = 0;
+    gl.enableVertexAttribArray(pos_location);
+    gl.vertexAttribPointer(pos_location, 3, gl.FLOAT, false, 0, 0);
+  }
+
+  changed() {
+    var gl = AceVox.gl;
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
+    gl.bufferData(gl.ARRAY_BUFFER, this.pos, gl.DYNAMIC_DRAW);
+  }
+
+  render() {
+    AceVox.gl.bindVertexArray(this.vao);
+    AceVox.gl.drawArrays(AceVox.gl.TRIANGLES, 0, this.pos.length / 3);
   }
 }

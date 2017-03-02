@@ -61,7 +61,7 @@ function init() {
   AceVox.gl = gl;
 
   //Load Resources
-  AceVox.shader_cache = ShaderCache.load(["trs"], loadingComplete, (err) => {
+  AceVox.shader_cache = ShaderCache.load(['trs', 'chunk_basic'], loadingComplete, (err) => {
     console.error(err);
 
     if(!DEBUG)
@@ -73,6 +73,7 @@ function loadingComplete() {
   console.log("Loading complete");
   //Initialize game
   currentModule = new BasicModule();
+  window.currentModule = currentModule;
 
   //Begin loop
   requestAnimationFrame(mainLoop);

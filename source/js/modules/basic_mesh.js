@@ -18,7 +18,6 @@ export class BasicMesh {
     gl.bindVertexArray(this.vao);
 
     this.vbo = gl.createBuffer();
-    console.log(this.vbo);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     gl.bufferData(gl.ARRAY_BUFFER, this.vertices, gl.STATIC_DRAW);
 
@@ -27,16 +26,8 @@ export class BasicMesh {
     gl.vertexAttribPointer(attribLoc, 3, gl.FLOAT, false, 0, 0);
   }
 
-  bind() {
-      AceVox.gl.bindVertexArray(this.vao);
-  }
-
-  draw() {
-      AceVox.gl.drawArrays(AceVox.gl.TRIANGLES, 0, this.vertices.length / 3);
-  }
-
   render() {
-      this.bind();
-      this.draw();
+      AceVox.gl.bindVertexArray(this.vao);
+      AceVox.gl.drawArrays(AceVox.gl.TRIANGLES, 0, this.vertices.length / 3);
   }
 }
