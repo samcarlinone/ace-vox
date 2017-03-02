@@ -54,7 +54,7 @@ self.onmessage = function(msg) {
 
             //Top
             if(y == 63 || data[p + 4096] >= AIR) {
-              pos = pos.concat([
+              pos.push(
                   x, y+1,   z,
                 x+1, y+1,   z,
                 x+1, y+1, z+1,
@@ -62,7 +62,7 @@ self.onmessage = function(msg) {
                   x, y+1,   z,
                 x+1, y+1, z+1,
                   x, y+1, z+1
-              ]);
+              );
 
               var sideTex = 0;
 
@@ -93,7 +93,7 @@ self.onmessage = function(msg) {
                   break;
               }
 
-              tex = tex.concat([
+              tex.push(
                 0, 0, sideTex,
                 1, 0, sideTex,
                 1, 1, sideTex,
@@ -101,9 +101,9 @@ self.onmessage = function(msg) {
                 0, 0, sideTex,
                 1, 1, sideTex,
                 0, 1, sideTex
-              ]);
+              );
 
-              light = light.concat([
+              light.push(
                 1, 1, 1,
                 1, 1, 1,
                 1, 1, 1,
@@ -111,7 +111,7 @@ self.onmessage = function(msg) {
                 1, 1, 1,
                 1, 1, 1,
                 1, 1, 1
-              ]);
+              );
             }
           }
         }
