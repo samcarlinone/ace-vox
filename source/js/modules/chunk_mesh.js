@@ -31,19 +31,33 @@ export class ChunkMesh {
     this.vao = gl.createVertexArray();
     gl.bindVertexArray(this.vao);
 
-    this.vbo = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
+    //Position buffer
+    this.posBuf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.posBuf);
     gl.bufferData(gl.ARRAY_BUFFER, this.pos, gl.DYNAMIC_DRAW);
 
     var pos_location = 0;
     gl.enableVertexAttribArray(pos_location);
     gl.vertexAttribPointer(pos_location, 3, gl.FLOAT, false, 0, 0);
+
+    //Texture buffer
+    this.texBuf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.texBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, this.tex, gl.DYNAMIC_DRAW);
+
+    var tex_location = 4;
+    gl.enableVertexAttribArray(tex_location);
+    gl.vertexAttribPointer(tex_location, 3, gl.FLOAT, false, 0, 0);
   }
 
   changed() {
     var gl = AceVox.gl;
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.posBuf);
     gl.bufferData(gl.ARRAY_BUFFER, this.pos, gl.DYNAMIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.texBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, this.tex, gl.DYNAMIC_DRAW);
+
+    console.log(this);
   }
 
   render() {

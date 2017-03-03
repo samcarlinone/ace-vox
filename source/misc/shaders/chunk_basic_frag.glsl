@@ -3,12 +3,13 @@ precision highp float;
 precision highp int;
 precision highp sampler2DArray;
 
-//uniform sampler2DArray diffuse;
-//in vec2 v_st;
+uniform sampler2DArray atlas;
+in vec3 texCoord;
+
 out vec4 color;
 
 void main()
 {
-    //color = texture(diffuse, vec3(v_st, layer));
-    color = vec4(1.0, 1.0, 0.0, 0.0);
+    color = texture(atlas, texCoord);
+    //color = vec4(1.0, 1.0, 0.0, 0.0);
 }

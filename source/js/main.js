@@ -27,9 +27,7 @@ var currentModule;
  */
 window.onload = function() {
   init();
-
-  console.log(Blocks);
-
+  
   if(DEBUG)
     window.AceVox = AceVox;
 }

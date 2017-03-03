@@ -40,7 +40,6 @@ export class ArrayTexture {
 
     var pixels = ctx.getImageData(0, 0, can.width, can.height);
     pixels = new Uint8Array(pixels.data.buffer);
-    console.log(pixels, this.tileSize, this.totalTiles);
 
     this.tex = gl.createTexture();
 

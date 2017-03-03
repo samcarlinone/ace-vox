@@ -1,4 +1,5 @@
 import ShaderCache from './shader_cache.js';
+import TextureCache from './texture_cache.js';
 import AceVox from './ace_vox.js';
 import {BasicMesh} from './basic_mesh.js';
 import {Chunk} from './chunk.js';
@@ -51,6 +52,9 @@ export class BasicModule {
 
     var mvpLocation = gl.getUniformLocation(program, 'MVP');
     gl.uniformMatrix4fv(mvpLocation, false, matrix);
+    var diffuseLocation = gl.getUniformLocation(program, 'atlas')
+    gl.uniform1i(diffuseLocation, 0);
+
     this.chunk_mesh.render();
   }
 
