@@ -16,8 +16,7 @@ export class BasicModule {
     window.camera = this.camera = new Camera();
 
     this.camera.target = this.player.lookVec;
-
-    window.pos = {x: 0, y: 0, z:-110};
+    this.camera.pos = this.player.pos;
 
     this.basic_mesh = new BasicMesh([0, 1, 0,
                                      1, 0, 0,
@@ -57,7 +56,7 @@ export class BasicModule {
     mat4.mul(MVP, mat4.create(), this.camera.getVP());
 
     var mvpLocation = gl.getUniformLocation(program, 'MVP');
-    gl.uniformMatrix4fv(mvpLocation, false, MVP);
+    gl.uniformMatrix4fv(mvpLocation, false, this.camera.getVP());
     var diffuseLocation = gl.getUniformLocation(program, 'atlas')
     gl.uniform1i(diffuseLocation, 0);
 
@@ -67,6 +66,19 @@ export class BasicModule {
   update(timestep) {
     MeshBuilder.update();
 
-    this.player.update();
+    this.player.update(timestep);
+  }
+
+  mouseMove(e) {
+    this.player.hRot += e.movementX / 200;
+    this.player.vRot -= e.movementY / 200;
+  }
+
+  keyDown(e) {
+    this.player.controller.keyDown(e);
+  }
+
+  keyUp(e) {
+    this.player.controller.keyUp(e);
   }
 }

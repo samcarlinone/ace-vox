@@ -27,7 +27,7 @@ var currentModule;
  */
 window.onload = function() {
   init();
-  
+
   if(DEBUG)
     window.AceVox = AceVox;
 }
@@ -45,6 +45,22 @@ function init() {
 
   AceVox.ui.style.width = AceVox.game_size[0]+"px";
   AceVox.ui.style.height = AceVox.game_size[1]+"px";
+
+  //Add event listeners
+  AceVox.main.onclick = () => {
+    AceVox.main.requestPointerLock();
+  }
+
+  document.addEventListener('pointerlockchange', () => {
+    if (document.pointerLockElement == AceVox.main) {
+      document.addEventListener("mousemove", mouseMove, false);
+    } else {
+      document.removeEventListener("mousemove", mouseMove, false);
+    }
+  }, false);
+
+  window.addEventListener('keydown', keyDown, false);
+  window.addEventListener('keyup', keyUp, false);
 
   //Initialize WebGL2
   var gl = AceVox.can.getContext( 'webgl2', { antialias: false } );
@@ -113,4 +129,19 @@ function mainLoop(timestamp) {
       render();
 
     requestAnimationFrame(mainLoop);
+}
+
+function mouseMove(e) {
+  if(currentModule.mouseMove)
+    currentModule.mouseMove(e);
+}
+
+function keyDown(e) {
+  if(currentModule.keyDown)
+    currentModule.keyDown(e);
+}
+
+function keyUp(e) {
+  if(currentModule.keyUp)
+    currentModule.keyUp(e);
 }
