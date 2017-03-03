@@ -1,5 +1,6 @@
 import {BasicModule} from './modules/basic_module.js';
 import ShaderCache from './modules/shader_cache.js';
+import TextureCache from './modules/texture_cache.js'
 import AceVox from './modules/ace_vox.js';
 import Blocks from './modules/blocks.js';
 //import * as Victor from 'Victor';
@@ -61,7 +62,12 @@ function init() {
   AceVox.gl = gl;
 
   //Load Resources
-  AceVox.shader_cache = ShaderCache.load(['trs', 'chunk_basic'], loadingComplete, (err) => {
+  AceVox.shader_cache = ShaderCache.load(['trs', 'chunk_basic'],
+  () => {
+    TextureCache.load([{name: "atlas", imgs:["dirtTop", "dirtSide"]}], loadingComplete);
+  }
+  ,
+  (err) => {
     console.error(err);
 
     if(!DEBUG)
