@@ -5,10 +5,17 @@ import {BasicMesh} from './basic_mesh.js';
 import {Chunk} from './chunk.js';
 import MeshBuilder from './mesh_builder.js';
 import {vec3, mat4} from 'gl-matrix';
+import {Camera} from './camera.js';
+import {Player} from './player.js';
 
 export class BasicModule {
   constructor() {
     this.shader = ShaderCache.shaders['trs'];
+
+    window.player = this.player = new Player();
+    window.camera = this.camera = new Camera();
+
+    this.camera.target = this.player.lookVec;
 
     window.pos = {x: 0, y: 0, z:-110};
 
@@ -46,12 +53,11 @@ export class BasicModule {
 
     var program = ShaderCache.shaders['chunk_basic'].program;
     gl.useProgram(program);
-    var matrix = mat4.create();
-    mat4.perspective(matrix, 90, 16/9, 0.1, 100);
-    mat4.translate(matrix, matrix, vec3.fromValues(window.pos.x, window.pos.y, window.pos.z));
+    var MVP = mat4.create();
+    mat4.mul(MVP, mat4.create(), this.camera.getVP());
 
     var mvpLocation = gl.getUniformLocation(program, 'MVP');
-    gl.uniformMatrix4fv(mvpLocation, false, matrix);
+    gl.uniformMatrix4fv(mvpLocation, false, MVP);
     var diffuseLocation = gl.getUniformLocation(program, 'atlas')
     gl.uniform1i(diffuseLocation, 0);
 
@@ -60,5 +66,7 @@ export class BasicModule {
 
   update(timestep) {
     MeshBuilder.update();
+
+    this.player.update();
   }
 }
