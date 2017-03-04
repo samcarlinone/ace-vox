@@ -1,8 +1,8 @@
-import {BasicModule} from './modules/basic_module.js';
-import ShaderCache from './modules/shader_cache.js';
-import TextureCache from './modules/texture_cache.js'
-import AceVox from './modules/ace_vox.js';
-import Blocks from './modules/blocks.js';
+import {BasicModule} from './modules/game/basic_module.js';
+import ShaderCache from './modules/graphics/shader_cache.js';
+import TextureCache from './modules/graphics/texture_cache.js'
+import AceVox from './modules/game/ace_vox.js';
+import Blocks from './modules/blocks/blocks.js';
 //import * as Victor from 'Victor';
 
 /**

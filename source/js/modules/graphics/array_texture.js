@@ -1,10 +1,9 @@
-import AceVox from './ace_vox.js';
-import TextureCache from './texture_cache.js';
+import AceVox from '../game/ace_vox.js';
 
 export class ArrayTexture {
 
   /**
-   * constructor - Creates a shader from two strings
+   * constructor - Creates an arraytexture from a name and array of images
    *
    * @param  {Object} obj {name, imgs:[]}
    * @return {ArrayTexture} this is a constructor

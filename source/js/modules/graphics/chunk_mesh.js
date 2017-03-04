@@ -1,4 +1,4 @@
-import AceVox from './ace_vox.js';
+import AceVox from '../game/ace_vox.js';
 
 /**
  * Class containing mesh data for a given chunk
@@ -50,16 +50,22 @@ export class ChunkMesh {
     gl.vertexAttribPointer(tex_location, 3, gl.FLOAT, false, 0, 0);
   }
 
+
+  /**
+   * changed - Call this function when the a new mesh has been generated to rebind data
+   */
   changed() {
     var gl = AceVox.gl;
     gl.bindBuffer(gl.ARRAY_BUFFER, this.posBuf);
     gl.bufferData(gl.ARRAY_BUFFER, this.pos, gl.DYNAMIC_DRAW);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.texBuf);
     gl.bufferData(gl.ARRAY_BUFFER, this.tex, gl.DYNAMIC_DRAW);
-
-    console.log(this);
   }
 
+
+  /**
+   * render - binds the vertex array, and calls gl.drawArrays 
+   */
   render() {
     AceVox.gl.bindVertexArray(this.vao);
     AceVox.gl.drawArrays(AceVox.gl.TRIANGLES, 0, this.pos.length / 3);

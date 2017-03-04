@@ -1,5 +1,5 @@
 import {vec3, mat4} from 'gl-matrix';
-import AceVox from './ace_vox.js';
+import AceVox from '../game/ace_vox.js';
 
 export class Camera {
   constructor() {

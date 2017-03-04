@@ -23,6 +23,10 @@ class MeshBuilder {
     this.idle = 2;
   }
 
+
+  /**
+   * update - Call every update to check for dirty meshes
+   */
   update() {
     //Check priority meshes
     for(var i=0; i<this.meshes.length; i++) {
@@ -76,7 +80,7 @@ class MeshBuilder {
 
 
   /**
-   * Called when thread completes, calls update when done
+   * Called when thread completes, calls update when done to start working on next mesh
    * @param  {Object} msg contains id, as well as pos, tex, light {Buffer} members and dat {Buffer}
    */
   jobComplete(msg) {
