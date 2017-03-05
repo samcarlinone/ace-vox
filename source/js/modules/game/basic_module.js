@@ -56,7 +56,7 @@ export class BasicModule {
     var mvpLocation = gl.getUniformLocation(program, 'MVP');
     gl.uniformMatrix4fv(mvpLocation, false, this.camera.getVP());
     var sunVecLocation = gl.getUniformLocation(program, 'sunVec');
-    gl.uniform3fv(sunVecLocation, vec3.fromValues(Math.sqrt(0.1), -Math.sqrt(0.3), Math.sqrt(0.6)));
+    gl.uniform3fv(sunVecLocation, vec3.fromValues(Math.sqrt(0.2), -Math.sqrt(0.5), Math.sqrt(0.3)));
     var sunVecLocation = gl.getUniformLocation(program, 'sunCol');
     gl.uniform3fv(sunVecLocation, vec3.fromValues(1, 1, 1));
     var diffuseLocation = gl.getUniformLocation(program, 'atlas')
@@ -66,26 +66,6 @@ export class BasicModule {
   }
 
   update(timestep) {
-    this.anim += 1;
-
-    if(!this.chunk.locked) {
-      for(var x=0; x<64; x++) {
-        for(var y=0; y<64; y++) {
-          for(var z=0; z<64; z++) {
-            var p = x + z*64 + y*4096;
-
-            if((Math.sin((x + z + this.anim/10)/10)+1)*32 < y)
-              this.chunk.data[p] = Chunk.SUN_AIR;//0b1011110001100111;
-            else
-              this.chunk.data[p] = 0;
-
-          }
-        }
-      }
-
-      this.chunk.dirty = true;
-    }
-
     //Actual important
     MeshBuilder.update();
 

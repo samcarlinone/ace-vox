@@ -73,8 +73,6 @@ class MeshBuilder {
         mesh.chunk.locked = true;
         mesh.processing = true;
 
-        console.log("Processing mesh");
-
         return;
       }
     }
