@@ -24,17 +24,17 @@ export class BasicModule {
 
     this.chunk = new Chunk();
 
-    for(var x=0; x<64; x++) {
-      for(var y=0; y<64; y++) {
-        for(var z=0; z<64; z++) {
-          var p = x + z*64 + y*4096;
-
-          if(x % 3 == 0 && y > 30)
-            this.chunk.data[p] = Chunk.AIR+1;
-
-        }
-      }
-    }
+    // for(var x=0; x<64; x++) {
+    //   for(var y=0; y<64; y++) {
+    //     for(var z=0; z<64; z++) {
+    //       var p = x + z*64 + y*4096;
+    //
+    //       if(x + z < y)
+    //         this.chunk.data[p] = Chunk.AIR;
+    //
+    //     }
+    //   }
+    // }
 
     window.chunk = this.chunk;
 

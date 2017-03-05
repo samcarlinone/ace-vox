@@ -9,7 +9,7 @@ export class Camera {
 
     this.FOV = 100;
     this.NEAR = 0.01;
-    this.FAR = 100;
+    this.FAR = 300;
 
     //TEMP variables for getVP
     this.V = mat4.create();

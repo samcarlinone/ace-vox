@@ -77,6 +77,7 @@ function init() {
 
   //Configure webgl
   gl.enable(gl.DEPTH_TEST);
+  gl.enable(gl.CULL_FACE);
 
   //Load Resources
   AceVox.shader_cache = ShaderCache.load(['trs', 'chunk_basic'],

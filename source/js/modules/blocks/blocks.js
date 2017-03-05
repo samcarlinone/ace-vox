@@ -2,10 +2,12 @@ var Blocks = [
   {
     name: 'DIRT',
     cube: true,
-    texId: 0
+    texId: 0,
+    transparent: false
   }
 ];
 
+//Adjust texture id to conform
 for(var i=0,len=Blocks.length; i<len; i++) {
   if(!Blocks[i].texId.length) {
     Blocks[i].texId = [Blocks[i].texId, Blocks[i].texId, Blocks[i].texId, Blocks[i].texId];
