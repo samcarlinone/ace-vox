@@ -86,7 +86,6 @@ class MeshBuilder {
    * @param  {Object} msg contains id, as well as pos, tex, light {Buffer} members and dat {Buffer}
    */
   jobComplete(msg) {
-    console.log(msg.data);
     var worker;
 
     for(var i=0; i<this.simpleWorkers.length; i++) {
@@ -116,6 +115,7 @@ class MeshBuilder {
     mesh.chunk.bData = new Uint16Array(msg.data.bDat);
 
     mesh.pos = new Float32Array(msg.data.pos);
+    mesh.norm = new Float32Array(msg.data.norm);
     mesh.tex = new Float32Array(msg.data.tex);
     mesh.light = new Uint8Array(msg.data.light);
 

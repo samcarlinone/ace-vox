@@ -82,7 +82,7 @@ function init() {
   //Load Resources
   AceVox.shader_cache = ShaderCache.load(['trs', 'chunk_basic'],
   () => {
-    TextureCache.load([{name: "atlas", imgs:["arrow", "dirtSide"]}], loadingComplete);
+    TextureCache.load([{name: "atlas", imgs:["dirtTop", "dirtSide"]}], loadingComplete);
   }
   ,
   (err) => {

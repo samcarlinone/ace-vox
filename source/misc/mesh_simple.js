@@ -49,6 +49,7 @@ self.onmessage = function(msg) {
   var bData = new Uint16Array(msg.data.bDat);
 
   var pos = [];
+  var norm = [];
   var tex = [];
   var light = [];
 
@@ -79,6 +80,16 @@ self.onmessage = function(msg) {
                   x, y+1, z+1,
                 x+1, y+1, z+1,
                   x, y+1,   z
+              );
+
+              norm.push(
+                0, 1, 0,
+                0, 1, 0,
+                0, 1, 0,
+
+                0, 1, 0,
+                0, 1, 0,
+                0, 1, 0
               );
 
               var sideTex = 0;
@@ -153,6 +164,16 @@ self.onmessage = function(msg) {
                   x,   y, z+1
               );
 
+              norm.push(
+                0,-1, 0,
+                0,-1, 0,
+                0,-1, 0,
+
+                0,-1, 0,
+                0,-1, 0,
+                0,-1, 0
+              );
+
               var sideTex = 0;
 
               switch(data[p] & ROT_MASK) {
@@ -223,6 +244,16 @@ self.onmessage = function(msg) {
                   x, y+1,   z,
                 x+1, y+1,   z,
                   x,   y,   z
+              );
+
+              norm.push(
+                0, 0,-1,
+                0, 0,-1,
+                0, 0,-1,
+
+                0, 0,-1,
+                0, 0,-1,
+                0, 0,-1
               );
 
               var sideTex = 0;
@@ -297,6 +328,16 @@ self.onmessage = function(msg) {
                   x, y+1, z+1
               );
 
+              norm.push(
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1
+              );
+
               var sideTex = 0;
 
               switch(data[p] & ROT_MASK) {
@@ -367,6 +408,16 @@ self.onmessage = function(msg) {
                   x,   y, z+1,
                   x, y+1, z+1,
                   x,   y,   z
+              );
+
+              norm.push(
+                -1, 0, 0,
+                -1, 0, 0,
+                -1, 0, 0,
+
+                -1, 0, 0,
+                -1, 0, 0,
+                -1, 0, 0
               );
 
               var sideTex = 0;
@@ -441,6 +492,16 @@ self.onmessage = function(msg) {
                 x+1,   y, z+1
               );
 
+              norm.push(
+                1, 0, 0,
+                1, 0, 0,
+                1, 0, 0,
+
+                1, 0, 0,
+                1, 0, 0,
+                1, 0, 0
+              );
+
               var sideTex = 0;
 
               switch(data[p] & ROT_MASK) {
@@ -502,12 +563,14 @@ self.onmessage = function(msg) {
   }
 
   if(pos.length == 0) {
-    pos = [0, 0, 0];
-    tex = [0, 0, 0];
-    light = [0, 0, 0];
+    pos.push(0, 0, 0);
+    norm.push(0, 0, 0);
+    tex.push(0, 0, 0);
+    light.push(0, 0, 0);
   }
 
   pos = new Float32Array(pos);
+  norm = new Float32Array(norm);
   tex = new Float32Array(tex);
   light = new Uint8Array(light);
 
@@ -516,12 +579,14 @@ self.onmessage = function(msg) {
     dat: data,
     bDat: bData,
     pos: pos,
+    norm: norm,
     tex: tex,
     light: light
   }, [
     data.buffer,
     bData.buffer,
     pos.buffer,
+    norm.buffer,
     tex.buffer,
     light.buffer
   ]);
