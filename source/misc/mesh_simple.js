@@ -97,12 +97,12 @@ self.onmessage = function(msg) {
 
               tex.push(
                 0, 0, sideTex,
+                1, 1, sideTex,
                 1, 0, sideTex,
-                1, 1, sideTex,
 
-                0, 0, sideTex,
+                0, 1, sideTex,
                 1, 1, sideTex,
-                0, 1, sideTex
+                0, 0, sideTex
               );
 
               light.push(
@@ -222,13 +222,13 @@ self.onmessage = function(msg) {
               }
 
               tex.push(
-                0, 0, sideTex,
-                1, 0, sideTex,
+                0, 1, sideTex,
                 1, 1, sideTex,
+                0, 0, sideTex,
 
+                1, 0, sideTex,
                 0, 0, sideTex,
-                1, 1, sideTex,
-                0, 1, sideTex
+                1, 1, sideTex
               );
 
               light.push(
@@ -285,13 +285,13 @@ self.onmessage = function(msg) {
               }
 
               tex.push(
-                0, 0, sideTex,
-                1, 0, sideTex,
                 1, 1, sideTex,
+                0, 1, sideTex,
+                0, 0, sideTex,
 
-                0, 0, sideTex,
                 1, 1, sideTex,
-                0, 1, sideTex
+                0, 0, sideTex,
+                1, 0, sideTex
               );
 
               light.push(
@@ -348,13 +348,13 @@ self.onmessage = function(msg) {
               }
 
               tex.push(
-                0, 0, sideTex,
                 1, 0, sideTex,
                 1, 1, sideTex,
-
                 0, 0, sideTex,
-                1, 1, sideTex,
-                0, 1, sideTex
+
+                0, 1, sideTex,
+                0, 0, sideTex,
+                1, 1, sideTex
               );
 
               light.push(
@@ -411,12 +411,12 @@ self.onmessage = function(msg) {
               }
 
               tex.push(
-                0, 0, sideTex,
+                1, 1, sideTex,
                 1, 0, sideTex,
-                1, 1, sideTex,
-
                 0, 0, sideTex,
+
                 1, 1, sideTex,
+                0, 0, sideTex,
                 0, 1, sideTex
               );
 
