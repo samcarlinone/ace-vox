@@ -1,3 +1,5 @@
+import {vec3} from 'gl-matrix';
+
 /**
  * Class representing a 64^3 chunk of world data
  * -SIZE_1, SIZE_2, SIZE_3, Has static members for size in each dimensions, and masks for ROT, AIR, and BLOCK type
@@ -6,6 +8,7 @@
  * -dirty, {boolean} flag representing whether the chunk has changed, starts true !This flag must be changed externally
  * -locked, {boolean} flag whether data is in use by builder thread !This flag must be changed externally
  * -priority, {boolean} flag whether mesh should be prioritized in build queue !This flag must be changed externally
+ * -position, {vec3}
  */
 export class Chunk {
   /**
@@ -29,5 +32,7 @@ export class Chunk {
     this.dirty = true;
     this.locked = false;
     this.priority = false;
+
+    this.position = vec3.create();
   }
 }

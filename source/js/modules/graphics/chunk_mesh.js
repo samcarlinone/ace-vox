@@ -93,4 +93,16 @@ export class ChunkMesh {
     AceVox.gl.bindVertexArray(this.vao);
     AceVox.gl.drawArrays(AceVox.gl.TRIANGLES, 0, this.pos.length / 3);
   }
+
+
+  /**
+   * destroy - destroys associated buffer data
+   */
+  destroy() {
+    var gl = AceVox.gl;
+    gl.deleteBuffer(this.posBuf);
+    gl.deleteBuffer(this.normBuf);
+    gl.deleteBuffer(this.texBuf);
+    gl.deleteBuffer(this.lightBuf);
+  }
 }

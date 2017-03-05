@@ -5,7 +5,7 @@ export class Player {
   constructor() {
     //Configurations
     this.SPEED = 0.01;
-
+    this.RENDERED = true;
     //Properties
     this.pos = vec3.fromValues(30, 45, 30);
     this.tMove = vec3.create();

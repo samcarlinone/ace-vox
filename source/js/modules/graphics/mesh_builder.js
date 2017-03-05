@@ -143,6 +143,7 @@ class MeshBuilder {
   destroyMesh(mesh) {
     for(var i=0; i<this.meshes.length; i++) {
       if(this.meshes[i] == mesh) {
+        this.meshes[i].destroy();
         return this.meshes.splice(i, 1);
       }
     }

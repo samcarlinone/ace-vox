@@ -2,9 +2,12 @@ import {vec3, mat4} from 'gl-matrix';
 import AceVox from '../game/ace_vox.js';
 
 export class Camera {
-  constructor() {
-    this.pos = vec3.fromValues(30, 60, 30);
-    this.target = vec3.fromValues(0, 0, 0);
+  constructor(player) {
+    if(!player)
+      var player = {};
+
+    this.pos = player.pos || vec3.fromValues(30, 60, 30);
+    this.target = player.lookVec || vec3.fromValues(0, 0, 0);
     this.up = vec3.fromValues(0, 1, 0);
 
     this.FOV = 100;
