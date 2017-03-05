@@ -124,7 +124,7 @@ class MeshBuilder {
 
 
   /**
-   * Create a new mesh
+   * createMesh - Create a new mesh
    * @param  {Chunk} chunk
    * @return {ChunkMesh}
    */
@@ -132,6 +132,20 @@ class MeshBuilder {
     this.meshes.push(new ChunkMesh(this.curID, chunk));
     this.curID += 1;
     return this.meshes[this.meshes.length-1];
+  }
+
+
+  /**
+   * destroyMesh - Remove a mesh from generation queue
+   * @param  {ChunkMesh} mesh
+   * @return {ChunkMesh} returns the mesh
+   */
+  destroyMesh(mesh) {
+    for(var i=0; i<this.meshes.length; i++) {
+      if(this.meshes[i] == mesh) {
+        return this.meshes.splice(i, 1);
+      }
+    }
   }
 }
 
