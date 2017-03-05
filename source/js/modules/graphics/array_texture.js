@@ -12,6 +12,7 @@ export class ArrayTexture {
     var gl = AceVox.gl;
 
     this.tileSize = obj.imgs[0].width;
+    this.tileArea = this.tileSize * this.tileSize;
 
     //Get smallest power of two that can hold all tiles
     this.numTiles = 2;
@@ -20,32 +21,35 @@ export class ArrayTexture {
     }
     this.totalTiles = this.numTiles * this.numTiles;
 
+    //Draw each image and then fill array with data, each image is "strung-out" in final array for webgl
     var can = document.createElement('canvas');
-    can.width = can.height = this.tileSize * this.numTiles;
-
+    can.width = can.height = this.tileSize;
     var ctx = can.getContext('2d');
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, can.width, can.height);
 
-    for(var y=0; y<this.numTiles; y++) {
-      for(var x=0; x<this.numTiles; x++) {
-        if((x + y*this.numTiles) < obj.imgs.length) {
-          ctx.drawImage(obj.imgs[x + y*this.numTiles], x*this.tileSize, y*this.tileSize);
-        } else {
-          break;
-        }
+    var pixels = new Uint8Array(this.totalTiles * this.tileArea * 4);
+
+    for(var i=0; i<obj.imgs.length; i++) {
+      ctx.drawImage(obj.imgs[i], 0, 0);
+      var buffer = ctx.getImageData(0, 0, this.tileSize, this.tileSize).data;
+
+      for(var j=0; j<this.tileArea*4; j++) {
+        pixels[i*this.tileArea*4 + j] = buffer[j];
       }
     }
 
-    var pixels = ctx.getImageData(0, 0, can.width, can.height);
-    pixels = new Uint8Array(pixels.data.buffer);
+    //Check if we have empty slots
+    if(obj.imgs.length < this.totalTiles) {
+      for(var i=this.tileArea*4*obj.imgs.length; i<this.totalTiles*this.tileArea*4; i++) {
+        pixels[i] = 255;
+      }
+    }
 
     this.tex = gl.createTexture();
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D_ARRAY, this.tex);
-    gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texImage3D(
         gl.TEXTURE_2D_ARRAY,
         0,

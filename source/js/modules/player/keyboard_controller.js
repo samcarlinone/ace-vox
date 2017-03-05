@@ -26,7 +26,7 @@ class KeyboardController {
   }
 
   keyDown(e) {
-    console.log(e.keyCode);
+    //console.log(e.keyCode);
 
     for(var i=0; i<this.key.length; i++) {
       if(this.key[i].code.indexOf(e.keyCode) != -1) {
