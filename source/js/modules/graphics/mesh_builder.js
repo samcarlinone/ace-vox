@@ -60,10 +60,12 @@ class MeshBuilder {
         this.simpleWorkers[i].w.postMessage(
             {
                 id: mesh.id,
-                dat: mesh.chunk.data.buffer // Data reference
+                dat: mesh.chunk.data.buffer, // Data reference
+                bDat: mesh.chunk.bData.buffer
             },
             [
-                mesh.chunk.data.buffer // Data
+                mesh.chunk.data.buffer, // Data
+                mesh.chunk.bData.buffer
             ]
         );
 
@@ -84,6 +86,7 @@ class MeshBuilder {
    * @param  {Object} msg contains id, as well as pos, tex, light {Buffer} members and dat {Buffer}
    */
   jobComplete(msg) {
+    console.log(msg.data);
     var worker;
 
     for(var i=0; i<this.simpleWorkers.length; i++) {
@@ -110,10 +113,11 @@ class MeshBuilder {
     mesh.chunk.locked = false;
 
     mesh.chunk.data = new Uint16Array(msg.data.dat);
+    mesh.chunk.bData = new Uint16Array(msg.data.bDat);
 
     mesh.pos = new Float32Array(msg.data.pos);
     mesh.tex = new Float32Array(msg.data.tex);
-    mesh.light = new Float32Array(msg.data.light);
+    mesh.light = new Uint8Array(msg.data.light);
 
     mesh.changed();
 

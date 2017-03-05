@@ -16,11 +16,14 @@ export class Chunk {
   static get SIZE_3() { return 262144; }
 
   static get AIR() {        return 0b1000000000000000; }
+  static get SUN_AIR() {    return 0b1111111111111111; }
   static get BLOCK_MASK() { return 0b0000111111111111; }
   static get ROT_MASK() {   return 0b0111000000000000; }
 
   constructor() {
     this.data = new Uint16Array(Chunk.SIZE_3);
+    this.bData = new Uint16Array(Chunk.SIZE_2 * 6);
+    this.bData.fill(Chunk.SUN_AIR);
 
     this.active = false;
     this.dirty = true;

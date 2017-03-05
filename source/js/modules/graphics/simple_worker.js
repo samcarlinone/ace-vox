@@ -7,5 +7,6 @@ export class SimpleWorker {
   constructor() {
     this.job = -1;
     this.w = new Worker('mesh_simple.js');
+    this.w.onerror = (e) => {console.error(e)};
   }
 }
