@@ -73,12 +73,4 @@ export class BasicModule {
     this.player.hRot += e.movementX / 200;
     this.player.vRot -= e.movementY / 200;
   }
-
-  keyDown(e) {
-    this.player.controller.keyDown(e);
-  }
-
-  keyUp(e) {
-    this.player.controller.keyUp(e);
-  }
 }
