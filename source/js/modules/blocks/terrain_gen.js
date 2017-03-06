@@ -10,13 +10,14 @@ class TerrainGen {
     switch(type) {
       case 'overworld-0.0.1':
         for(var x=0; x<64; x++) {
-          for(var y=0; y<64; y++) {
-            for(var z=0; z<64; z++) {
+          for(var z=0; z<64; z++) {
+            var height = (this.noise.perlin2(chunk.position[0]/64 + x/64, chunk.position[2]/64 + z/64)+1)*32;
+
+            for(var y=0; y<64; y++) {
               var p = x + z*64 + y*4096;
 
-              if((this.noise.perlin2(chunk.position[0]/64 + x/64, chunk.position[2]/64 + z/64)+1)*32 < y)
+              if(height < y + chunk.position[1])
                 chunk.data[p] = Chunk.SUN_AIR;
-
             }
           }
         }

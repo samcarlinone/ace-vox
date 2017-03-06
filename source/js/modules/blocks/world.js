@@ -21,7 +21,7 @@ import MeshBuilder from '../graphics/mesh_builder.js';
  * -entities {Entity[]} active entities in this world
  *
  * internal variables
- * -op_queue {Operation[]} pending world modification operations
+ * -op_queue {Operation[]} pending world modification operations, !Operations may be delayed if total time taken exceeds OP_QUEUE_MS_LIMIT
  * -tick_part {float} how long since last tick
  */
 export class World {
@@ -37,6 +37,7 @@ export class World {
 
     //Internal
     this.op_queue = [];
+    this.OP_QUEUE_MS_LIMIT = 5;
     this.tick_part = 0;
 
     //GL Variables
@@ -69,11 +70,18 @@ export class World {
     }
 
     //Execute operations
+    var time = performance.now();
+
     for(var i=0; i<this.op_queue.length; i++) {
       if(!this.op_queue[i].target.locked) {
         if(Operator.execute(this.op_queue[i])) {
           this.op_queue.splice(i, 1);
           i--;
+        }
+
+        //Measured in ms
+        if(performance.now() - time > this.OP_QUEUE_MS_LIMIT) {
+          break;
         }
       }
     }
