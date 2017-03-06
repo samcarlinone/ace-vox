@@ -4,6 +4,12 @@ var Blocks = [
     cube: true,
     texId: 0,
     transparent: false
+  },
+  {
+    name: 'DIRT-TOP',
+    cube: true,
+    texId: [1, 0, 2],
+    transparent: false
   }
 ];
 

@@ -5,6 +5,12 @@ var Blocks = [
     cube: true,
     texId: 0,
     transparent: false
+  },
+  {
+    name: 'DIRT-TOP',
+    cube: true,
+    texId: [1, 0, 2],
+    transparent: false
   }
 ];
 
@@ -93,8 +99,7 @@ self.onmessage = function(msg) {
               );
 
               var sideTex = 0;
-
-              switch(data[p] & ROT_MASK) {
+              switch((data[p] & ROT_MASK) >>> 12) {
                 //N
                 case 0:
                   sideTex = Blocks[val].texId[1];
@@ -176,7 +181,7 @@ self.onmessage = function(msg) {
 
               var sideTex = 0;
 
-              switch(data[p] & ROT_MASK) {
+              switch((data[p] & ROT_MASK) >>> 12) {
                 //N
                 case 0:
                   sideTex = Blocks[val].texId[1];
@@ -258,7 +263,7 @@ self.onmessage = function(msg) {
 
               var sideTex = 0;
 
-              switch(data[p] & ROT_MASK) {
+              switch((data[p] & ROT_MASK) >>> 12) {
                 //N
                 case 0:
                   sideTex = Blocks[val].texId[0];
@@ -276,11 +281,11 @@ self.onmessage = function(msg) {
                   sideTex = Blocks[val].texId[2];
                   break;
                 //U
-                case 0:
+                case 4:
                   sideTex = Blocks[val].texId[1];
                   break;
                 //D
-                case 0:
+                case 5:
                   sideTex = Blocks[val].texId[1];
                   break;
               }
@@ -340,7 +345,7 @@ self.onmessage = function(msg) {
 
               var sideTex = 0;
 
-              switch(data[p] & ROT_MASK) {
+              switch((data[p] & ROT_MASK) >>> 12) {
                 //N
                 case 0:
                   sideTex = Blocks[val].texId[3];
@@ -358,11 +363,11 @@ self.onmessage = function(msg) {
                   sideTex = Blocks[val].texId[2];
                   break;
                 //U
-                case 0:
+                case 4:
                   sideTex = Blocks[val].texId[1];
                   break;
                 //D
-                case 0:
+                case 5:
                   sideTex = Blocks[val].texId[1];
                   break;
               }
@@ -422,7 +427,7 @@ self.onmessage = function(msg) {
 
               var sideTex = 0;
 
-              switch(data[p] & ROT_MASK) {
+              switch((data[p] & ROT_MASK) >>> 12) {
                 //N
                 case 0:
                   sideTex = Blocks[val].texId[2];
@@ -440,11 +445,11 @@ self.onmessage = function(msg) {
                   sideTex = Blocks[val].texId[0];
                   break;
                 //U
-                case 0:
+                case 4:
                   sideTex = Blocks[val].texId[1];
                   break;
                 //D
-                case 0:
+                case 5:
                   sideTex = Blocks[val].texId[1];
                   break;
               }
@@ -504,7 +509,7 @@ self.onmessage = function(msg) {
 
               var sideTex = 0;
 
-              switch(data[p] & ROT_MASK) {
+              switch((data[p] & ROT_MASK) >>> 12) {
                 //N
                 case 0:
                   sideTex = Blocks[val].texId[2];
@@ -522,11 +527,11 @@ self.onmessage = function(msg) {
                   sideTex = Blocks[val].texId[3];
                   break;
                 //U
-                case 0:
+                case 4:
                   sideTex = Blocks[val].texId[1];
                   break;
                 //D
-                case 0:
+                case 5:
                   sideTex = Blocks[val].texId[1];
                   break;
               }
