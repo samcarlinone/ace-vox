@@ -18,6 +18,8 @@ class TerrainGen {
 
               if(height < y + chunk.position[1])
                 chunk.data[p] = Chunk.SUN_AIR;
+              else
+                chunk.data[p] = 0;
             }
           }
         }
@@ -25,6 +27,26 @@ class TerrainGen {
         chunk.dirty = true;
 
         break;
+
+      case 'testing':
+          for(var x=0; x<64; x++) {
+            for(var z=0; z<64; z++) {
+              var height = ((chunk.position[0] + x)/16)+32;
+
+              for(var y=0; y<64; y++) {
+                var p = x + z*64 + y*4096;
+
+                if(height < y + chunk.position[1])
+                  chunk.data[p] = Chunk.SUN_AIR;
+                else
+                  chunk.data[p] = 0;
+              }
+            }
+          }
+
+          chunk.dirty = true;
+
+          break;
     }
   }
 }

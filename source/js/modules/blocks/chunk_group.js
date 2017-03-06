@@ -17,7 +17,7 @@ export class ChunkGroup {
     this.player = player;
     this.world = world;
 
-    this.lastPos = vec3.fromValues(Math.round(player.pos[0]/64)*64, Math.round(player.pos[1]/64)*64, Math.round(player.pos[0]/64)*64);
+    this.lastPos = vec3.fromValues(Math.floor(player.pos[0]/64)*64, Math.floor(player.pos[1]/64)*64, Math.floor(player.pos[0]/64)*64);
 
     this.chunks = [];
 
@@ -50,10 +50,10 @@ export class ChunkGroup {
    * update - Reload chunks if player has moved
    */
   update() {
-    if(this.lastPos[0] == Math.round(this.player.pos[0]/64)*64 && this.lastPos[1] == Math.round(this.player.pos[1]/64)*64 && this.lastPos[2] == Math.round(this.player.pos[2]/64)*64)
+    if(this.lastPos[0] == Math.floor(this.player.pos[0]/64)*64 && this.lastPos[1] == Math.floor(this.player.pos[1]/64)*64 && this.lastPos[2] == Math.floor(this.player.pos[2]/64)*64)
       return;
 
-    this.lastPos = vec3.fromValues(Math.round(this.player.pos[0]/64)*64, Math.round(this.player.pos[1]/64)*64, Math.round(this.player.pos[2 ]/64)*64);
+    this.lastPos = vec3.fromValues(Math.floor(this.player.pos[0]/64)*64, Math.floor(this.player.pos[1]/64)*64, Math.floor(this.player.pos[2 ]/64)*64);
 
     //Get all positions
     var pos_arr = [];
