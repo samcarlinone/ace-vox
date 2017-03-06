@@ -53,7 +53,7 @@ export class ChunkGroup {
     if(this.lastPos[0] == Math.floor(this.player.pos[0]/64)*64 && this.lastPos[1] == Math.floor(this.player.pos[1]/64)*64 && this.lastPos[2] == Math.floor(this.player.pos[2]/64)*64)
       return;
 
-    this.lastPos = vec3.fromValues(Math.floor(this.player.pos[0]/64)*64, Math.floor(this.player.pos[1]/64)*64, Math.floor(this.player.pos[0]/64)*64);
+    this.lastPos = vec3.fromValues(Math.floor(this.player.pos[0]/64)*64, Math.floor(this.player.pos[1]/64)*64, Math.floor(this.player.pos[2]/64)*64);
 
     //Get all positions
     var pos_arr = [];
@@ -93,7 +93,6 @@ export class ChunkGroup {
     //Actually reassign
     for(var i=0; i<c_temp.length; i++) {
       c_temp[i].position = pos_arr[i];
-
       this.world.op_queue.push(new Operation(Operation.GEN_DATA, c_temp[i], this.world.realm));
     }
   }

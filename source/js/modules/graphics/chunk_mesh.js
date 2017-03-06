@@ -23,7 +23,6 @@ export class ChunkMesh {
     this.pos = this.norm = this.tex = new Float32Array(3);
     this.light = new Uint8Array(3);
 
-    this.position = {x: 0, y: 0, z:0};
     this.scale = {x: 1, y: 1, z: 1};
 
     //WebGL things

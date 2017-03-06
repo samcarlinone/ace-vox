@@ -46,23 +46,6 @@ export class World {
     this.sunVecLocation = gl.getUniformLocation(this.program, 'sunVec');
     this.sunColLocation = gl.getUniformLocation(this.program, 'sunCol');
     this.atlasLocation = gl.getUniformLocation(this.program, 'atlas');
-
-    //Testing
-    this.chunk = new Chunk();
-
-    for(var x=0; x<64; x++) {
-      for(var y=0; y<64; y++) {
-        for(var z=0; z<64; z++) {
-          var p = x + z*64 + y*4096;
-
-          if(x + z < y)
-            this.chunk.data[p] = Chunk.SUN_AIR;//0b1011110001100111;
-
-        }
-      }
-    }
-
-    this.chunk_mesh = MeshBuilder.createMesh(this.chunk);
   }
 
   update(delta) {
@@ -107,17 +90,14 @@ export class World {
       if(this.cGroups[i].player.RENDERED) {
         for(var j=0; j<this.cGroups[i].meshes.length; j++) {
           var MVP = mat4.create();
-          mat4.translate(MVP, MVP, this.cGroups[i].meshes[j].position);
           mat4.mul(MVP, MVP, this.cGroups[i].player.camera.getVP());
-          gl.uniformMatrix4fv(this.mvpLocation, false, this.cGroups[i].player.camera.getVP());
+          mat4.translate(MVP, MVP, this.cGroups[i].meshes[j].chunk.position);
+          gl.uniformMatrix4fv(this.mvpLocation, false, MVP);
 
           this.cGroups[i].meshes[j].render();
         }
       }
     }
-
-    // gl.uniformMatrix4fv(this.mvpLocation, false, this.cGroups[0].player.camera.getVP());
-    // this.chunk_mesh.render();
   }
 
   tick() {

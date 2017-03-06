@@ -14,7 +14,7 @@ class TerrainGen {
             for(var z=0; z<64; z++) {
               var p = x + z*64 + y*4096;
 
-              if((this.noise.perlin2(x/64, z/64)+1)*32 < y)
+              if((this.noise.perlin2(chunk.position[0]/64 + x/64, chunk.position[2]/64 + z/64)+1)*32 < y)
                 chunk.data[p] = Chunk.SUN_AIR;
 
             }
