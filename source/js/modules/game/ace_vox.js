@@ -9,7 +9,7 @@
 class AceVox {
   constructor() {
     //TODO: Make these loaded from localStorage
-    this.CHUNK_R = 3;
+    this.CHUNK_R = 1;
     this.CHUNK_H = 1;
   }
 }

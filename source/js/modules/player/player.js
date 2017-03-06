@@ -2,7 +2,7 @@ import {vec3} from 'gl-matrix';
 import KeyboardController from './keyboard_controller.js';
 
 export class Player {
-  constructor() {
+  constructor(camera) {
     //Configurations
     this.SPEED = 0.01;
     this.RENDERED = true;
@@ -18,6 +18,12 @@ export class Player {
     this.lookVec = vec3.fromValues(1, 0, 0);
 
     this.controller = KeyboardController;
+
+    if(camera) {
+      this.camera = camera;
+      camera.pos = this.pos;
+      camera.target = this.lookVec;
+    }
   }
 
   update(delta) {

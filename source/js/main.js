@@ -129,8 +129,7 @@ function mainLoop(timestamp) {
         }
     }
 
-    if(numUpdateSteps > 0)
-      render();
+    render();
 
     requestAnimationFrame(mainLoop);
 }

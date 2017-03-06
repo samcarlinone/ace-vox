@@ -33,7 +33,8 @@ export class ChunkGroup {
           var chunk = new Chunk();
           vec3.add(chunk.position, this.lastPos, vec3.fromValues(x*64, y*64, z*64));
 
-          this.world.op_queue.push(new Operation(Operation.GEN_DATA, chunk));
+          this.world.op_queue.push(new Operation(Operation.GEN_DATA, chunk, this.world.realm));
+          chunk.dirty = false;
 
           if(player.RENDERED)
             this.meshes.push(MeshBuilder.createMesh(chunk));
@@ -49,10 +50,10 @@ export class ChunkGroup {
    * update - Reload chunks if player has moved
    */
   update() {
-    if(this.lastPos[0] == Math.floor(player.pos[0]/64)*64 && this.lastPos[1] == Math.floor(player.pos[1]/64)*64 && this.lastPos[2] == Math.floor(player.pos[2]/64)*64)
+    if(this.lastPos[0] == Math.floor(this.player.pos[0]/64)*64 && this.lastPos[1] == Math.floor(this.player.pos[1]/64)*64 && this.lastPos[2] == Math.floor(this.player.pos[2]/64)*64)
       return;
 
-    this.lastPos = vec3.fromValues(Math.floor(player.pos[0]/64)*64, Math.floor(player.pos[1]/64)*64, Math.floor(player.pos[0]/64)*64);
+    this.lastPos = vec3.fromValues(Math.floor(this.player.pos[0]/64)*64, Math.floor(this.player.pos[1]/64)*64, Math.floor(this.player.pos[0]/64)*64);
 
     //Get all positions
     var pos_arr = [];
@@ -93,7 +94,7 @@ export class ChunkGroup {
     for(var i=0; i<c_temp.length; i++) {
       c_temp[i].position = pos_arr[i];
 
-      this.world.op_queue.push(new Operation(Operation.GEN_DATA, chunk));
+      this.world.op_queue.push(new Operation(Operation.GEN_DATA, c_temp[i], this.world.realm));
     }
   }
 }
