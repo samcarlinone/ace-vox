@@ -17,7 +17,11 @@ class TerrainGen {
               var p = x + z*64 + y*4096;
 
               if(height < y + chunk.position[1]) {
-                chunk.data[p] = Chunk.SUN_AIR;
+                if(Math.random() > 0.999) {
+                  chunk.data[p] = 2;
+                } else {
+                  chunk.data[p] = Chunk.SUN_AIR;
+                }
               } else {
                 if(height == y + chunk.position[1]) {
                   chunk.data[p] = 0b0100000000000001;

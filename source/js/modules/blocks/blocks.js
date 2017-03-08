@@ -10,6 +10,12 @@ var Blocks = [
     cube: true,
     texId: [1, 0, 2],
     transparent: false
+  },
+  {
+    name: 'LEAVES',
+    cube: true,
+    texId: 3,
+    transparent: true
   }
 ];
 

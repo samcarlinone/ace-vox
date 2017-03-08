@@ -35,6 +35,7 @@ export class ArrayTexture {
       for(var j=0; j<this.tileArea*4; j++) {
         pixels[i*this.tileArea*4 + j] = buffer[j];
       }
+      ctx.clearRect(0, 0, this.tileSize, this.tileSize);
     }
 
     //Check if we have empty slots
