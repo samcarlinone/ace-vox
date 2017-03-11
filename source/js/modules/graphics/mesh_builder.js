@@ -15,7 +15,7 @@ class MeshBuilder {
     this.curID = 0;
     this.meshes = [];
 
-    this.simpleWorkers = [new SimpleWorker(), new SimpleWorker()];
+    this.simpleWorkers = [new SimpleWorker('mesh_simple.js'), new SimpleWorker('mesh_simple.js')];
 
     for(var i=0; i<this.simpleWorkers.length; i++)
       this.simpleWorkers[i].w.addEventListener('message', (msg) => {this.jobComplete(msg)});
@@ -33,7 +33,7 @@ class MeshBuilder {
       if(this.idle <= 0)
         break;
 
-      if(this.meshes[i].chunk.priority && this.meshes[i].chunk.dirty && !this.meshes[i].processing) {
+      if(this.meshes[i].chunk.priority && this.meshes[i].chunk.dirty && !this.meshes[i].processing && !this.meshes[i].chunk.locked) {
         this.assignWorker(this.meshes[i]);
       }
     }
@@ -42,7 +42,7 @@ class MeshBuilder {
       if(this.idle <= 0)
         break;
 
-      if(this.meshes[i].chunk.dirty && !this.meshes[i].processing) {
+      if(this.meshes[i].chunk.dirty && !this.meshes[i].processing && !this.meshes[i].chunk.locked) {
         this.assignWorker(this.meshes[i]);
       }
     }
@@ -50,7 +50,7 @@ class MeshBuilder {
 
 
   /**
-   * @param  {type} mesh The mesh to begin processing with a thread, assumes worker idle
+   * @param  {ChunkMesh} mesh The mesh to begin processing with a thread, assumes worker idle
    */
   assignWorker(mesh) {
     for(var i=0; i<this.simpleWorkers.length; i++) {
@@ -108,6 +108,7 @@ class MeshBuilder {
     mesh.processing = false;
     mesh.chunk.dirty = false;
     mesh.chunk.locked = false;
+    mesh.chunk.requireRebuild = false;
 
     mesh.chunk.data = new Uint16Array(msg.data.dat);
     mesh.chunk.bData = new Uint16Array(msg.data.bDat);

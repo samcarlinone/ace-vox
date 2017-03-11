@@ -1,4 +1,5 @@
 import MeshBuilder from '../graphics/mesh_builder.js';
+import ChunkBuilder from '../blocks/chunk_builder.js';
 import {Camera} from '../graphics/camera.js';
 import {Player} from '../player/player.js';
 import {World} from '../blocks/world.js';
@@ -23,8 +24,13 @@ export class BasicModule {
   }
 
   update(delta) {
+    //Perform updates
     this.world.update(delta);
-    //Actual important
+  }
+
+  process() {
+    //High-CPU tasks
+    ChunkBuilder.update();
     MeshBuilder.update();
   }
 

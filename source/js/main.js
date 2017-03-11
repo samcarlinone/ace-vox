@@ -111,6 +111,10 @@ function render() {
   currentModule.render();
 }
 
+function process() {
+  currentModule.process();
+}
+
 function panic() {
     delta = 0;
 }
@@ -129,7 +133,13 @@ function mainLoop(timestamp) {
         }
     }
 
-    render();
+    if(numUpdateSteps > 0) {
+      render();
+
+      AceVox.last_render = performance.now();
+
+      process();
+    }
 
     requestAnimationFrame(mainLoop);
 }

@@ -36,8 +36,6 @@ export class World {
     this.entities = [];
 
     //Internal
-    this.op_queue = [];
-    this.OP_QUEUE_MS_LIMIT = 5;
     this.tick_part = 0;
 
     //GL Variables
@@ -68,23 +66,6 @@ export class World {
         this.cGroups[i].update(delta);
       }
     }
-
-    //Execute operations
-    var time = performance.now();
-
-    for(var i=0; i<this.op_queue.length; i++) {
-      if(!this.op_queue[i].target.locked) {
-        if(Operator.execute(this.op_queue[i])) {
-          this.op_queue.splice(i, 1);
-          i--;
-        }
-
-        //Measured in ms
-        if(performance.now() - time > this.OP_QUEUE_MS_LIMIT) {
-          break;
-        }
-      }
-    }
   }
 
   render() {
@@ -97,12 +78,14 @@ export class World {
     for(var i=0; i<this.cGroups.length; i++) {
       if(this.cGroups[i].player.RENDERED) {
         for(var j=0; j<this.cGroups[i].meshes.length; j++) {
-          var MVP = mat4.create();
-          mat4.mul(MVP, MVP, this.cGroups[i].player.camera.getVP());
-          mat4.translate(MVP, MVP, this.cGroups[i].meshes[j].chunk.position);
-          gl.uniformMatrix4fv(this.mvpLocation, false, MVP);
+          if(!this.cGroups[i].meshes[j].chunk.requireRebuild) {
+            var MVP = mat4.create();
+            mat4.mul(MVP, MVP, this.cGroups[i].player.camera.getVP());
+            mat4.translate(MVP, MVP, this.cGroups[i].meshes[j].chunk.position);
+            gl.uniformMatrix4fv(this.mvpLocation, false, MVP);
 
-          this.cGroups[i].meshes[j].render();
+            this.cGroups[i].meshes[j].render();
+          }
         }
       }
     }

@@ -4,9 +4,9 @@
  * -job {int} id of current job or -1 if idle
  */
 export class SimpleWorker {
-  constructor() {
+  constructor(script) {
     this.job = -1;
-    this.w = new Worker('mesh_simple.js');
+    this.w = new Worker(script);
     this.w.onerror = (e) => {console.error(e)};
   }
 }

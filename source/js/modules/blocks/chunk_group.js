@@ -1,5 +1,6 @@
 import {Chunk} from '../blocks/chunk.js';
 import MeshBuilder from '../graphics/mesh_builder.js';
+import ChunkBuilder from './chunk_builder.js';
 import AceVox from '../game/ace_vox.js';
 import {vec3} from 'gl-matrix';
 import {Operation} from './operation.js';
@@ -30,10 +31,11 @@ export class ChunkGroup {
           if(Math.sqrt(x*x + y*y + z*z) > AceVox.CHUNK_R)
             continue;
 
-          var chunk = new Chunk();
+          var chunk = ChunkBuilder.createChunk(this.world.realm);
           vec3.add(chunk.position, this.lastPos, vec3.fromValues(x*64, y*64, z*64));
 
-          this.world.op_queue.push(new Operation(Operation.GEN_DATA, chunk, this.world.realm));
+          chunk.opQueue.push(ChunkBuilder.GEN_DATA);
+          chunk.requireRebuild = true;
           chunk.dirty = false;
 
           if(player.RENDERED)
@@ -93,7 +95,8 @@ export class ChunkGroup {
     //Actually reassign
     for(var i=0; i<c_temp.length; i++) {
       c_temp[i].position = pos_arr[i];
-      this.world.op_queue.push(new Operation(Operation.GEN_DATA, c_temp[i], this.world.realm));
+      c_temp[i].opQueue.push(ChunkBuilder.GEN_DATA);
+      c_temp[i].requireRebuild = true;
     }
   }
 }
