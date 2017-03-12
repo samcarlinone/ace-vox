@@ -3,7 +3,6 @@ import MeshBuilder from '../graphics/mesh_builder.js';
 import ChunkBuilder from './chunk_builder.js';
 import AceVox from '../game/ace_vox.js';
 import {vec3} from 'gl-matrix';
-import {Operation} from './operation.js';
 
 /**
  * ChunkGroup({Player}, {World})- stores chunks around a player

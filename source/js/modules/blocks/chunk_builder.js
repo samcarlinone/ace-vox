@@ -59,6 +59,7 @@ class ChunkBuilder {
     for(var i=0; i<this.simpleWorkers.length; i++) {
       if(this.simpleWorkers[i].job == -1) {
         this.simpleWorkers[i].job = chunk.id;
+        this.simpleWorkers[i].time = performance.now();
 
         this.simpleWorkers[i].w.postMessage(
             {
@@ -107,6 +108,8 @@ class ChunkBuilder {
         break;
       }
     }
+
+    //console.log("Chunk Gen Took", performance.now() - worker.time);
 
     this.idle += 1;
     worker.job = -1;

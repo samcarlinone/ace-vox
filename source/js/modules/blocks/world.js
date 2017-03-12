@@ -1,7 +1,6 @@
 import ShaderCache from '../graphics/shader_cache.js';
 import TextureCache from '../graphics/texture_cache.js';
 import AceVox from '../game/ace_vox.js';
-import Operator from './operator.js';
 import {Chunk} from './chunk.js';
 import {vec3, mat4} from 'gl-matrix';
 import {Camera} from '../graphics/camera.js';
@@ -21,7 +20,6 @@ import MeshBuilder from '../graphics/mesh_builder.js';
  * -entities {Entity[]} active entities in this world
  *
  * internal variables
- * -op_queue {Operation[]} pending world modification operations, !Operations may be delayed if total time taken exceeds OP_QUEUE_MS_LIMIT
  * -tick_part {float} how long since last tick
  */
 export class World {

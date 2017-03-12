@@ -56,6 +56,7 @@ class MeshBuilder {
     for(var i=0; i<this.simpleWorkers.length; i++) {
       if(this.simpleWorkers[i].job == -1) {
         this.simpleWorkers[i].job = mesh.id;
+        this.simpleWorkers[i].time = performance.now();
 
         this.simpleWorkers[i].w.postMessage(
             {
@@ -101,6 +102,8 @@ class MeshBuilder {
         break;
       }
     }
+
+    console.log("Mesh Build Took", performance.now() - worker.time);
 
     this.idle += 1;
     worker.job = -1;
