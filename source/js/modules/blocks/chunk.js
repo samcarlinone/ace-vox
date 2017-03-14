@@ -23,7 +23,7 @@ export class Chunk {
   static get BLOCK_MASK() { return 0b0000111111111111; }
   static get ROT_MASK() {   return 0b0111000000000000; }
 
-  constructor(id, realm) {
+  constructor(id, world) {
     this.data = new Uint16Array(Chunk.SIZE_3);
     this.bData = new Uint16Array(Chunk.SIZE_2 * 6);
     this.bData.fill(Chunk.SUN_AIR);
@@ -34,7 +34,7 @@ export class Chunk {
     this.priority = false;
     this.requireRebuild = false;
 
-    this.realm = realm;
+    this.world = world;
 
     this.opQueue = [];
 

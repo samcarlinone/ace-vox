@@ -14,6 +14,7 @@ import MeshBuilder from '../graphics/mesh_builder.js';
  *
  * high level variables
  * -realm, {String} representing the world type
+ * -seed, {float} from [0-1)
  * -players {Player[]}
  * -cGroups {ChunkGroup[]} chunk groups around active players
  * -aChunks {Chunk[]} chunks with active blocks currently being simulated
@@ -23,9 +24,10 @@ import MeshBuilder from '../graphics/mesh_builder.js';
  * -tick_part {float} how long since last tick
  */
 export class World {
-  constructor(realm) {
+  constructor(realm, seed) {
     //High level
     this.realm = realm;
+    this.seed = seed;
 
     this.players = [];
     this.cGroups = [];

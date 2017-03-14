@@ -68,7 +68,8 @@ class ChunkBuilder {
                 bDat: chunk.bData.buffer,
                 op: chunk.opQueue[0],
                 pos: [chunk.position[0], chunk.position[1], chunk.position[2]],
-                realm: chunk.realm
+                realm: chunk.world.realm,
+                seed: chunk.world.seed
             },
             [
                 chunk.data.buffer, // Data
@@ -131,8 +132,8 @@ class ChunkBuilder {
    * @param {string} realm this is the realm the chunk belongs to
    * @return {Chunk}
    */
-  createChunk(realm) {
-    this.chunks.push(new Chunk(this.curID, realm));
+  createChunk(world) {
+    this.chunks.push(new Chunk(this.curID, world));
     this.curID += 1;
     return this.chunks[this.chunks.length-1];
   }

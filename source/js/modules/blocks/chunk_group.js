@@ -30,7 +30,7 @@ export class ChunkGroup {
           if(Math.sqrt(x*x + y*y + z*z) > AceVox.CHUNK_R)
             continue;
 
-          var chunk = ChunkBuilder.createChunk(this.world.realm);
+          var chunk = ChunkBuilder.createChunk(this.world);
           vec3.add(chunk.position, this.lastPos, vec3.fromValues(x*64, y*64, z*64));
 
           chunk.opQueue.push(ChunkBuilder.GEN_DATA);
