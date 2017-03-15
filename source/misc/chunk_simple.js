@@ -96,8 +96,8 @@ function generate(data, realm, seed, position) {
             var p = x + z*64 + y*4096;
 
             if(height < y + position[1]) {
-              if(Math.random() > 0.999) {
-                data[p] = 3;
+              if(noise[""+seed].perlin3(position[0]/64 + x/64, position[1]/64 + y/64, position[2]/64 + z/64) > 0.55) {
+                data[p] = 3 | SUN;
               } else {
                 data[p] = SUN;
               }
