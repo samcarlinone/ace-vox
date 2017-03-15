@@ -23,10 +23,10 @@ void main()
 {
     texCoord = texcoord;
 
-    if(lighting.x == 31.0)
+    if(lighting.x == 32.0)
       lightING = sunCol * abs(dot(sunVec, normal));
     else
-      lightING = vec3(lighting.x / 15.0, lighting.y / 15.0, lighting.z / 15.0);
+      lightING = vec3(lighting.x / 31.0, lighting.y / 31.0, lighting.z / 31.0);
     // lightING = vec3(1.0, 1.0, 1.0);
 
     gl_Position = MVP * vec4(position, 1.0);

@@ -1,6 +1,12 @@
 //=====================================[Copied from blocks.js
 var Blocks = [
   {
+    name: 'AIR',
+    cube: false,
+    texId: -1,
+    transparent: true
+  },
+  {
     name: 'DIRT',
     cube: true,
     texId: 0,
@@ -38,12 +44,13 @@ for(var i=0,len=Blocks.length; i<len; i++) {
 //=====================================[End Copy Pasta
 
 //Masks
-const AIR         = 0b1000000000000000;
-const LIGHT_R     = 0b0111110000000000;
-const LIGHT_G     = 0b0000001111100000;
-const LIGHT_B     = 0b0000000000011111;
-const BLOCK_MASK  = 0b0000111111111111;
-const ROT_MASK    = 0b0111000000000000;
+const TRANSPARENT = 0b10000000000000000000000000000000;
+const SUN         = 0b11000000000000000000000000000000;
+const LIGHT_R     = 0b00111110000000000000000000000000;
+const LIGHT_G     = 0b00000001111100000000000000000000;
+const LIGHT_B     = 0b00000000000011111000000000000000;
+const BLOCK_MASK  = 0b00000000000000000000111111111111;
+const ROT_MASK    = 0b00000000000000000111000000000000;
 
 //Size Constants
 const SIZE_1 = 64;
@@ -57,8 +64,8 @@ const SIZE_3 = SIZE_1 * SIZE_1 * SIZE_1;
  * @return {Object}     contains id, as well as pos, tex, light {Buffer} members and dat {Buffer}
  */
 self.onmessage = function(msg) {
-  var data = new Uint16Array(msg.data.dat);
-  var bData = new Uint16Array(msg.data.bDat);
+  var data = new Uint32Array(msg.data.dat);
+  var bData = new Uint32Array(msg.data.bDat);
 
   var pos = [];
   var norm = [];
@@ -70,7 +77,7 @@ self.onmessage = function(msg) {
       for(var z=0; z<SIZE_1; z++) {
         var p = x + z*SIZE_1 + y*SIZE_2;
         //Check if not air
-        if(data[p] < AIR) {
+        if((data[p] & BLOCK_MASK) > 0) {
           var val = data[p] & BLOCK_MASK;
           //Check if cube with face unneeded or custom mesh
           if(Blocks[val].cube) {
@@ -83,7 +90,7 @@ self.onmessage = function(msg) {
             else
               next = data[p + SIZE_2];
 
-            if(next >= AIR || Blocks[next & BLOCK_MASK].transparent) {
+            if((next & TRANSPARENT) !== 0) {
               pos.push(
                   x, y+1,   z,
                 x+1, y+1, z+1,
@@ -142,19 +149,31 @@ self.onmessage = function(msg) {
                 0, 0, sideTex
               );
 
-              var lr = (next & LIGHT_R) >>> 10;
-              var lg = (next & LIGHT_G) >>> 5;
-              var lb = (next & LIGHT_B);
+              if((next & SUN) !== 0) {
+                light.push(
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
 
-              light.push(
-                lr, lg, lb,
-                lr, lg, lb,
-                lr, lg, lb,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000
+                );
+              } else {
+                var lr = (next & LIGHT_R) >>> 25;
+                var lg = (next & LIGHT_G) >>> 20;
+                var lb = (next & LIGHT_B) >>> 15;
 
-                lr, lg, lb,
-                lr, lg, lb,
-                lr, lg, lb
-              );
+                light.push(
+                  lr, lg, lb,
+                  lr, lg, lb,
+                  lr, lg, lb,
+
+                  lr, lg, lb,
+                  lr, lg, lb,
+                  lr, lg, lb
+                );
+              }
             }
             //=================[End Top
 
@@ -164,7 +183,7 @@ self.onmessage = function(msg) {
             else
               next = data[p - SIZE_2];
 
-            if(next >= AIR || Blocks[next & BLOCK_MASK].transparent) {
+            if((next & TRANSPARENT) !== 0) {
               pos.push(
                   x,   y,   z,
                 x+1,   y,   z,
@@ -224,19 +243,31 @@ self.onmessage = function(msg) {
                 0, 1, sideTex
               );
 
-              var lr = (next & LIGHT_R) >>> 10;
-              var lg = (next & LIGHT_G) >>> 5;
-              var lb = (next & LIGHT_B);
+              if((next & SUN) !== 0) {
+                light.push(
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
 
-              light.push(
-                lr, lg, lb,
-                lr, lg, lb,
-                lr, lg, lb,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000
+                );
+              } else {
+                var lr = (next & LIGHT_R) >>> 25;
+                var lg = (next & LIGHT_G) >>> 20;
+                var lb = (next & LIGHT_B) >>> 15;
 
-                lr, lg, lb,
-                lr, lg, lb,
-                lr, lg, lb
-              );
+                light.push(
+                  lr, lg, lb,
+                  lr, lg, lb,
+                  lr, lg, lb,
+
+                  lr, lg, lb,
+                  lr, lg, lb,
+                  lr, lg, lb
+                );
+              }
             }
             //=================[End Bottom
 
@@ -246,7 +277,7 @@ self.onmessage = function(msg) {
             else
               next = data[p - SIZE_1];
 
-            if(next >= AIR || Blocks[next & BLOCK_MASK].transparent) {
+            if((next & TRANSPARENT) !== 0) {
               pos.push(
                 x+1,   y,   z,
                   x,   y,   z,
@@ -306,19 +337,31 @@ self.onmessage = function(msg) {
                 1, 1, sideTex
               );
 
-              var lr = (next & LIGHT_R) >>> 10;
-              var lg = (next & LIGHT_G) >>> 5;
-              var lb = (next & LIGHT_B);
+              if((next & SUN) !== 0) {
+                light.push(
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
 
-              light.push(
-                lr, lg, lb,
-                lr, lg, lb,
-                lr, lg, lb,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000
+                );
+              } else {
+                var lr = (next & LIGHT_R) >>> 25;
+                var lg = (next & LIGHT_G) >>> 20;
+                var lb = (next & LIGHT_B) >>> 15;
 
-                lr, lg, lb,
-                lr, lg, lb,
-                lr, lg, lb
-              );
+                light.push(
+                  lr, lg, lb,
+                  lr, lg, lb,
+                  lr, lg, lb,
+
+                  lr, lg, lb,
+                  lr, lg, lb,
+                  lr, lg, lb
+                );
+              }
             }
             //=================[End North
 
@@ -328,7 +371,7 @@ self.onmessage = function(msg) {
             else
               next = data[p + SIZE_1];
 
-            if(next >= AIR || Blocks[next & BLOCK_MASK].transparent) {
+            if((next & TRANSPARENT) !== 0) {
               pos.push(
                   x,   y, z+1,
                 x+1,   y, z+1,
@@ -388,19 +431,31 @@ self.onmessage = function(msg) {
                 1, 0, sideTex
               );
 
-              var lr = (next & LIGHT_R) >>> 10;
-              var lg = (next & LIGHT_G) >>> 5;
-              var lb = (next & LIGHT_B);
+              if((next & SUN) !== 0) {
+                light.push(
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
 
-              light.push(
-                lr, lg, lb,
-                lr, lg, lb,
-                lr, lg, lb,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000
+                );
+              } else {
+                var lr = (next & LIGHT_R) >>> 25;
+                var lg = (next & LIGHT_G) >>> 20;
+                var lb = (next & LIGHT_B) >>> 15;
 
-                lr, lg, lb,
-                lr, lg, lb,
-                lr, lg, lb
-              );
+                light.push(
+                  lr, lg, lb,
+                  lr, lg, lb,
+                  lr, lg, lb,
+
+                  lr, lg, lb,
+                  lr, lg, lb,
+                  lr, lg, lb
+                );
+              }
             }
             //=================[End South
 
@@ -410,7 +465,7 @@ self.onmessage = function(msg) {
             else
               next = data[p - 1];
 
-            if(next >= AIR || Blocks[next & BLOCK_MASK].transparent) {
+            if((next & TRANSPARENT) !== 0) {
               pos.push(
                   x, y+1,   z,
                   x,   y,   z,
@@ -470,19 +525,31 @@ self.onmessage = function(msg) {
                 1, 1, sideTex
               );
 
-              var lr = (next & LIGHT_R) >>> 10;
-              var lg = (next & LIGHT_G) >>> 5;
-              var lb = (next & LIGHT_B);
+              if((next & SUN) !== 0) {
+                light.push(
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
 
-              light.push(
-                lr, lg, lb,
-                lr, lg, lb,
-                lr, lg, lb,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000
+                );
+              } else {
+                var lr = (next & LIGHT_R) >>> 25;
+                var lg = (next & LIGHT_G) >>> 20;
+                var lb = (next & LIGHT_B) >>> 15;
 
-                lr, lg, lb,
-                lr, lg, lb,
-                lr, lg, lb
-              );
+                light.push(
+                  lr, lg, lb,
+                  lr, lg, lb,
+                  lr, lg, lb,
+
+                  lr, lg, lb,
+                  lr, lg, lb,
+                  lr, lg, lb
+                );
+              }
             }
             //=================[End West
 
@@ -492,7 +559,7 @@ self.onmessage = function(msg) {
             else
               next = data[p + 1];
 
-            if(next >= AIR || Blocks[next & BLOCK_MASK].transparent) {
+            if((next & TRANSPARENT) !== 0) {
               pos.push(
                 x+1,   y,   z,
                 x+1, y+1,   z,
@@ -552,19 +619,31 @@ self.onmessage = function(msg) {
                 0, 1, sideTex
               );
 
-              var lr = (next & LIGHT_R) >>> 10;
-              var lg = (next & LIGHT_G) >>> 5;
-              var lb = (next & LIGHT_B);
+              if((next & SUN) !== 0) {
+                light.push(
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
 
-              light.push(
-                lr, lg, lb,
-                lr, lg, lb,
-                lr, lg, lb,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000,
+                  0b100000, 0b100000, 0b100000
+                );
+              } else {
+                var lr = (next & LIGHT_R) >>> 25;
+                var lg = (next & LIGHT_G) >>> 20;
+                var lb = (next & LIGHT_B) >>> 15;
 
-                lr, lg, lb,
-                lr, lg, lb,
-                lr, lg, lb
-              );
+                light.push(
+                  lr, lg, lb,
+                  lr, lg, lb,
+                  lr, lg, lb,
+
+                  lr, lg, lb,
+                  lr, lg, lb,
+                  lr, lg, lb
+                );
+              }
             }
             //=================[End East
           }

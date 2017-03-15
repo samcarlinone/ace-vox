@@ -38,12 +38,13 @@ for(var i=0,len=Blocks.length; i<len; i++) {
 //=====================================[End Copy Pasta
 
 //Masks
-const AIR         = 0b1000000000000000;
-const LIGHT_R     = 0b0111110000000000;
-const LIGHT_G     = 0b0000001111100000;
-const LIGHT_B     = 0b0000000000011111;
-const BLOCK_MASK  = 0b0000111111111111;
-const ROT_MASK    = 0b0111000000000000;
+const TRANSPARENT = 0b10000000000000000000000000000000;
+const SUN         = 0b11000000000000000000000000000000;
+const LIGHT_R     = 0b00111110000000000000000000000000;
+const LIGHT_G     = 0b00000001111100000000000000000000;
+const LIGHT_B     = 0b00000000000011111000000000000000;
+const BLOCK_MASK  = 0b00000000000000000000111111111111;
+const ROT_MASK    = 0b00000000000000000111000000000000;
 
 //Size Constants
 const SIZE_1 = 64;
@@ -60,8 +61,8 @@ var noise = {};
  * @return {Object}     contains id, as well as pos, tex, light {Buffer} members and dat {Buffer}
  */
 self.onmessage = function(msg) {
-  var data = new Uint16Array(msg.data.dat);
-  var bData = new Uint16Array(msg.data.bDat);
+  var data = new Uint32Array(msg.data.dat);
+  var bData = new Uint32Array(msg.data.bDat);
   var op = msg.data.op;
 
   switch(msg.data.op) {
@@ -96,15 +97,15 @@ function generate(data, realm, seed, position) {
 
             if(height < y + position[1]) {
               if(Math.random() > 0.999) {
-                data[p] = 2;
+                data[p] = 3;
               } else {
-                data[p] = 0b1111111111111111;//Chunk.SUN_AIR;
+                data[p] = SUN;
               }
             } else {
               if(height == y + position[1]) {
-                data[p] = 0b0100000000000001;
+                data[p] = 0b0100000000000010;
               } else {
-                data[p] = 0b0100000000000001;
+                data[p] = 0b0100000000000010;
                 //chunk.data[p] = 0;
               }
             }

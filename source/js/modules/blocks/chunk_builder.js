@@ -120,8 +120,8 @@ class ChunkBuilder {
     chunk.dirty = true;
     chunk.requireRebuild = true;
 
-    chunk.data = new Uint16Array(msg.data.dat);
-    chunk.bData = new Uint16Array(msg.data.bDat);
+    chunk.data = new Uint32Array(msg.data.dat);
+    chunk.bData = new Uint32Array(msg.data.bDat);
 
     this.update();
   }

@@ -1,5 +1,11 @@
 var Blocks = [
   {
+    name: 'AIR',
+    cube: false,
+    texId: -1,
+    transparent: true
+  },
+  {
     name: 'DIRT',
     cube: true,
     texId: 0,

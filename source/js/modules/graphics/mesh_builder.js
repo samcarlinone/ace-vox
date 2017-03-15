@@ -113,8 +113,8 @@ class MeshBuilder {
     mesh.chunk.locked = false;
     mesh.chunk.requireRebuild = false;
 
-    mesh.chunk.data = new Uint16Array(msg.data.dat);
-    mesh.chunk.bData = new Uint16Array(msg.data.bDat);
+    mesh.chunk.data = new Uint32Array(msg.data.dat);
+    mesh.chunk.bData = new Uint32Array(msg.data.bDat);
 
     mesh.pos = new Float32Array(msg.data.pos);
     mesh.norm = new Float32Array(msg.data.norm);
