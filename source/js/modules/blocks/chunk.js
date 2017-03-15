@@ -26,7 +26,7 @@ export class Chunk {
   constructor(id, world) {
     this.data = new Uint32Array(Chunk.SIZE_3);
     this.bData = new Uint32Array(Chunk.SIZE_2 * 6);
-    this.bData.fill(Chunk.SUN_AIR);
+    this.bData.fill(1);
 
     this.active = false;
     this.dirty = true;

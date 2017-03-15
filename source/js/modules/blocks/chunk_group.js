@@ -1,5 +1,4 @@
 import {Chunk} from '../blocks/chunk.js';
-import {PosStore} from './pos_store.js';
 import MeshBuilder from '../graphics/mesh_builder.js';
 import ChunkBuilder from './chunk_builder.js';
 import AceVox from '../game/ace_vox.js';
@@ -25,8 +24,6 @@ export class ChunkGroup {
     if(player.RENDERED)
       this.meshes = [];
 
-    this.pos_store = new PosStore();
-
     for(var y=-AceVox.CHUNK_R; y<=AceVox.CHUNK_R; y++) {
       for(var x=-AceVox.CHUNK_R; x<=AceVox.CHUNK_R; x++) {
         for(var z=-AceVox.CHUNK_R; z<=AceVox.CHUNK_R; z++) {
@@ -45,7 +42,7 @@ export class ChunkGroup {
 
           this.chunks.push(chunk);
 
-          this.pos_store.addObj(chunk);
+          this.world.chunkStore.addObj(chunk);
         }
       }
     }
@@ -82,10 +79,10 @@ export class ChunkGroup {
           vec3.set(this.t_pos, x*64, y*64, z*64)
           vec3.add(this.c_pos, this.lastPos, this.t_pos);
 
-          if(this.pos_store.getObj(this.c_pos) === -1) {
+          if(this.world.chunkStore.getObj(this.c_pos) === -1) {
             for(var i=index; i < this.chunks.length; i++) {
               if(vec3.distance(this.chunks[i].position, this.lastPos) > AceVox.CHUNK_R*64) {
-                this.pos_store.moveObj(this.chunks[i], this.c_pos[0], this.c_pos[1], this.c_pos[2]);
+                this.world.chunkStore.moveObj(this.chunks[i], this.c_pos[0], this.c_pos[1], this.c_pos[2]);
                 this.chunks[i].opQueue.push(ChunkBuilder.GEN_DATA);
                 this.chunks[i].requireRebuild = true;
 

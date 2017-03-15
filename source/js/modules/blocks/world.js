@@ -2,6 +2,7 @@ import ShaderCache from '../graphics/shader_cache.js';
 import TextureCache from '../graphics/texture_cache.js';
 import AceVox from '../game/ace_vox.js';
 import {Chunk} from './chunk.js';
+import {PosStore} from './pos_store.js';
 import {vec3, mat4} from 'gl-matrix';
 import {Camera} from '../graphics/camera.js';
 import {Player} from '../player/player.js';
@@ -16,6 +17,7 @@ import MeshBuilder from '../graphics/mesh_builder.js';
  * -realm, {String} representing the world type
  * -seed, {float} from [0-1)
  * -players {Player[]}
+ * -chunkStore {PosStore} holds chunks by position for rapid position based access
  * -cGroups {ChunkGroup[]} chunk groups around active players
  * -aChunks {Chunk[]} chunks with active blocks currently being simulated
  * -entities {Entity[]} active entities in this world
@@ -30,6 +32,7 @@ export class World {
     this.seed = seed;
 
     this.players = [];
+    this.chunkStore = new PosStore();
     this.cGroups = [];
     this.aChunks = [];
 
