@@ -2,7 +2,7 @@
  * Class for Storing Objects by Position
  */
 export class PosStore {
-  constructor {
+  constructor() {
     this.store = {};
   }
 
@@ -49,10 +49,17 @@ export class PosStore {
    * moveObj - Moves object
    *
    * @param  {Object} obj Move the object by removing and adding
-   * @return {Object}     allows chaining   
+   * @param  {float}  x
+   * @param  {float}  y
+   * @param  {float}  z
+   * @return {Object}     allows chaining
    */
-  moveObj(obj) {
-    this.addObj(this.removeObj(obj));
+  moveObj(obj, x, y, z) {
+    this.removeObj(obj);
+    obj.position[0] = x;
+    obj.position[1] = y;
+    obj.position[2] = z;
+    this.addObj(obj);
 
     return obj;
   }
@@ -69,6 +76,9 @@ export class PosStore {
       return -1;
 
     if(!this.store[position[0]][position[1]])
+      return -1;
+
+    if(!this.store[position[0]][position[1]][position[2]])
       return -1;
 
     return this.store[position[0]][position[1]][position[2]];

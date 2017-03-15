@@ -1,4 +1,5 @@
 import {Chunk} from '../blocks/chunk.js';
+import {PosStore} from './pos_store.js';
 import MeshBuilder from '../graphics/mesh_builder.js';
 import ChunkBuilder from './chunk_builder.js';
 import AceVox from '../game/ace_vox.js';
@@ -24,6 +25,8 @@ export class ChunkGroup {
     if(player.RENDERED)
       this.meshes = [];
 
+    this.pos_store = new PosStore();
+
     for(var y=-AceVox.CHUNK_R; y<=AceVox.CHUNK_R; y++) {
       for(var x=-AceVox.CHUNK_R; x<=AceVox.CHUNK_R; x++) {
         for(var z=-AceVox.CHUNK_R; z<=AceVox.CHUNK_R; z++) {
@@ -41,8 +44,17 @@ export class ChunkGroup {
             this.meshes.push(MeshBuilder.createMesh(chunk));
 
           this.chunks.push(chunk);
+
+          this.pos_store.addObj(chunk);
         }
       }
+    }
+
+    this.pos_arr = [];
+    this.pos_arr_hold = [];
+
+    for(var i=0; i<this.chunks.length; i++) {
+      this.pos_arr.push(vec3.create());
     }
   }
 
@@ -54,48 +66,36 @@ export class ChunkGroup {
     if(this.lastPos[0] == Math.floor(this.player.pos[0]/64)*64 && this.lastPos[1] == Math.floor(this.player.pos[1]/64)*64 && this.lastPos[2] == Math.floor(this.player.pos[2]/64)*64)
       return;
 
-    this.lastPos = vec3.fromValues(Math.floor(this.player.pos[0]/64)*64, Math.floor(this.player.pos[1]/64)*64, Math.floor(this.player.pos[2 ]/64)*64);
+    this.lastPos = vec3.fromValues(Math.floor(this.player.pos[0]/64)*64, Math.floor(this.player.pos[1]/64)*64, Math.floor(this.player.pos[2]/64)*64);
 
     //Get all positions
-    var pos_arr = [];
+    this.t_pos = vec3.create();
+    this.c_pos = vec3.create();
+    var index = 0;
+
     for(var y=-AceVox.CHUNK_R; y<=AceVox.CHUNK_R; y++) {
       for(var x=-AceVox.CHUNK_R; x<=AceVox.CHUNK_R; x++) {
         for(var z=-AceVox.CHUNK_R; z<=AceVox.CHUNK_R; z++) {
           if(Math.sqrt(x*x + y*y + z*z) > AceVox.CHUNK_R)
             continue;
 
-          var new_pos = vec3.create();
-          vec3.add(new_pos, this.lastPos, vec3.fromValues(x*64, y*64, z*64));
-          pos_arr.push(new_pos);
+          vec3.set(this.t_pos, x*64, y*64, z*64)
+          vec3.add(this.c_pos, this.lastPos, this.t_pos);
+
+          if(this.pos_store.getObj(this.c_pos) === -1) {
+            for(var i=index; i < this.chunks.length; i++) {
+              if(vec3.distance(this.chunks[i].position, this.lastPos) > AceVox.CHUNK_R*64) {
+                this.pos_store.moveObj(this.chunks[i], this.c_pos[0], this.c_pos[1], this.c_pos[2]);
+                this.chunks[i].opQueue.push(ChunkBuilder.GEN_DATA);
+                this.chunks[i].requireRebuild = true;
+
+                index = i;
+                i = 1000000000;
+              }
+            }
+          }
         }
       }
-    }
-
-    //Remove all positions & chunks that exist
-    var c_temp = this.chunks.slice();
-    for(var i=0; i<c_temp.length; i++) {
-      var match = false;
-
-      for(var j=0; j<pos_arr.length; j++) {
-        if(vec3.equals(c_temp[i].position, pos_arr[j])) {
-          match = true;
-          break;
-        }
-      }
-
-      if(match) {
-        c_temp.splice(i, 1);
-        i--;
-        pos_arr.splice(j, 1);
-        j--;
-      }
-    }
-
-    //Actually reassign
-    for(var i=0; i<c_temp.length; i++) {
-      c_temp[i].position = pos_arr[i];
-      c_temp[i].opQueue.push(ChunkBuilder.GEN_DATA);
-      c_temp[i].requireRebuild = true;
     }
   }
 }

@@ -103,7 +103,7 @@ class MeshBuilder {
       }
     }
 
-    console.log("Mesh Build Took", performance.now() - worker.time);
+    //console.log("Mesh Build Took", performance.now() - worker.time);
 
     this.idle += 1;
     worker.job = -1;
