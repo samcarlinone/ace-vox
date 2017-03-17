@@ -7,7 +7,7 @@ import {vec3, mat4} from 'gl-matrix';
 import {Camera} from '../graphics/camera.js';
 import {Player} from '../player/player.js';
 import {ChunkGroup} from './chunk_group.js';
-
+import {traceRay as raycast} from './raycast.js';
 import MeshBuilder from '../graphics/mesh_builder.js';
 
 /**
@@ -48,6 +48,8 @@ export class World {
     this.sunVecLocation = gl.getUniformLocation(this.program, 'sunVec');
     this.sunColLocation = gl.getUniformLocation(this.program, 'sunCol');
     this.atlasLocation = gl.getUniformLocation(this.program, 'atlas');
+
+    console.log(raycast);
   }
 
   update(delta) {
@@ -101,5 +103,55 @@ export class World {
   addPlayer(player) {
     this.players.push(player);
     this.cGroups.push(new ChunkGroup(player, this));
+  }
+
+  //===================================================================[Chunk and Block Accessing]
+
+  /**
+   * posToChunk - Gets a chunk position from a world position
+   *
+   * @param  {vec3} pos world position
+   * @return {vec3}     Resulting position
+   */
+  posToChunk(pos) {
+    var new_pos = vec3.create();
+    new_pos[0] = Math.floor(pos[0]/64)*64;
+    new_pos[1] = Math.floor(pos[1]/64)*64;
+    new_pos[2] = Math.floor(pos[2]/64)*64;
+    return new_pos;
+  }
+
+  /**
+   * posToBlock - Gets a chunk data index from a world position
+   *
+   * @param  {vec3} pos world position
+   * @return {float}     data index
+   */
+  posToBlock(pos) {
+    return (Math.floor(pos[0])%64) + (Math.floor(pos[2])%64)*Chunk.SIZE_1 + (Math.floor(pos[1])%64)*Chunk.SIZE_2;
+  }
+
+  /**
+   * getBlock - Gets a block
+   *
+   * @param  {vec3|float} x Position vector or x
+   * @param  {float=} y only needed for 3 float mode
+   * @param  {float=} z only needed for 3 float mode
+   * @return {Int32}   returns only the block value
+   */
+  getBlock(x, y, z) {
+    var pos = x;
+
+    if(y !== undefined) {
+      pos = vec3.fromValues(x, y, z);
+    }
+
+    var chunk = this.chunkStore.getObj(this.posToChunk(pos));
+
+    if(chunk === -1 || chunk.locked) {
+      return undefined;
+    }
+
+    return chunk.data[this.posToBlock(pos)] & Chunk.BLOCK_MASK;
   }
 }

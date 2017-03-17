@@ -6,12 +6,12 @@ import {World} from '../blocks/world.js';
 
 export class BasicModule {
   constructor() {
-    this.camera = new Camera();
-    this.player = new Player(this.camera);
-
     this.world = new World("overworld-0.0.1");
-    this.world.addPlayer(this.player);
     window.world = this.world;
+
+    this.camera = new Camera();
+    this.player = new Player(this.world, this.camera);
+    this.world.addPlayer(this.player);
   }
 
   render() {
