@@ -90,24 +90,18 @@ function generate(data, realm, seed, position) {
     case 'overworld-0.0.1':
       for(var x=0; x<64; x++) {
         for(var z=0; z<64; z++) {
-          var height = (noise[""+seed].perlin2(position[0]/64 + x/64, position[2]/64 + z/64)+1)*64;
+          var height = Math.floor((noise[""+seed].perlin2(position[0]/64 + x/64, position[2]/64 + z/64)+1)*64);
 
           for(var y=0; y<64; y++) {
             var p = x + z*64 + y*4096;
 
             if(height < y + position[1]) {
-              var n = noise[""+seed].perlin3(position[0]/64 + x/64, position[1]/64 + y/64, position[2]/64 + z/64);
-              if(n > 0.55 && n < 0.6) {
-                data[p] = 3 | SUN;
-              } else {
-                data[p] = SUN;
-              }
+              data[p] = SUN;
             } else {
               if(height == y + position[1]) {
                 data[p] = 0b0100000000000010;
               } else {
-                data[p] = 0b0100000000000010;
-                //chunk.data[p] = 0;
+                data[p] = 1;
               }
             }
           }
