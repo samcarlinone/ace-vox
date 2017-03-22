@@ -96,14 +96,14 @@ function traceRay_impl( getVoxel,
 		hit_norm[0] = hit_norm[1] = hit_norm[2] = 0
 	}
 
-	return 0
+	return undefined
 
 }
 
 
 // conform inputs
 
-export default function traceRay(getVoxel, origin, direction, max_d, hit_pos, hit_norm) {
+export function traceRay(getVoxel, origin, direction, max_d, hit_pos, hit_norm) {
 	var px = +origin[0]
 		, py = +origin[1]
 		, pz = +origin[2]

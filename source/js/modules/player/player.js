@@ -1,5 +1,6 @@
 import {vec3} from 'gl-matrix';
 import KeyboardController from './keyboard_controller.js';
+import {Chunk} from '../blocks/chunk.js';
 
 export class Player {
   constructor(world, camera) {
@@ -7,7 +8,7 @@ export class Player {
     this.SPEED = 0.01;
     this.RENDERED = true;
     //Properties
-    this.pos = vec3.fromValues(30, 45, 30);
+    this.pos = vec3.fromValues(1000, 45, 1000);
     this.tMove = vec3.create();
     this.tSpeed = vec3.create();
     this.tOrigin = vec3.fromValues(0, 0, 0);
@@ -26,6 +27,9 @@ export class Player {
     }
 
     this.world = world;
+
+    //Internal Variables
+    this.mouse_cooldown = 15;
   }
 
   update(delta) {
@@ -42,5 +46,23 @@ export class Player {
     this.lookVec[0] = Math.cos(this.hRot) * Math.cos(this.vRot);
     this.lookVec[1] = Math.sin(this.vRot);
     this.lookVec[2] = Math.sin(this.hRot) * Math.cos(this.vRot);
+
+    //Raycast Testing
+    if(this.mouse_cooldown < 15) {
+      this.mouse_cooldown--;
+
+      if(this.mouse_cooldown === 0) {
+        this.mouse_cooldown = 15;
+      }
+    }
+
+    if(this.controller.getState('M1') && this.mouse_cooldown === 15) {
+      var result = this.world.raycast(this.pos, this.lookVec, 6);
+
+      if(result.type !== undefined) {
+        this.world.setBlock(result.hit_pos, Chunk.SUN_AIR);
+        this.mouse_cooldown = 14;
+      }
+    }
   }
 }

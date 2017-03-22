@@ -7,7 +7,7 @@ import {vec3, mat4} from 'gl-matrix';
 import {Camera} from '../graphics/camera.js';
 import {Player} from '../player/player.js';
 import {ChunkGroup} from './chunk_group.js';
-import {traceRay as raycast} from './raycast.js';
+import {traceRay} from './raycast.js';
 import MeshBuilder from '../graphics/mesh_builder.js';
 
 /**
@@ -48,8 +48,6 @@ export class World {
     this.sunVecLocation = gl.getUniformLocation(this.program, 'sunVec');
     this.sunColLocation = gl.getUniformLocation(this.program, 'sunCol');
     this.atlasLocation = gl.getUniformLocation(this.program, 'atlas');
-
-    console.log(raycast);
   }
 
   update(delta) {
@@ -153,5 +151,56 @@ export class World {
     }
 
     return chunk.data[this.posToBlock(pos)] & Chunk.BLOCK_MASK;
+  }
+
+
+  /**
+   * setBlock - Set a block value at a world position
+   *
+   * @param  {vec3|float} x  Position vector or x
+   * @param  {float|Int32} y   y or val
+   * @param  {float=} z   z if 3 floats passed in
+   * @param  {float=} val block value if 3 float version
+   * @return {Int32}     returns passed in value or undefined if write could not be performed
+   */
+  setBlock(x, y, z, val) {
+    var pos = x;
+    var v = y;
+
+    if(z !== undefined) {
+      pos = vec3.fromValues(x, y, z);
+      v = val;
+    }
+
+    var chunk = this.chunkStore.getObj(this.posToChunk(pos));
+
+    if(chunk === -1 || chunk.locked) {
+      return undefined;
+    }
+
+    chunk.data[this.posToBlock(pos)] = v;
+    chunk.dirty = true;
+
+    return v;
+  }
+
+  raycast(pos, dir, length) {
+    var result = {type: undefined, hit_pos: vec3.create(), hit_norm: vec3.create()};
+
+    result.type = traceRay((x, y, z) => { return this.getBlock(x, y, z); }, pos, dir, length, result.hit_pos, result.hit_norm);
+
+    if(result.hit_norm[0] > 0) {
+      result.hit_pos[0] -= 1;
+    }
+
+    if(result.hit_norm[1] > 0) {
+      result.hit_pos[1] -= 1;
+    }
+
+    if(result.hit_norm[2] > 0) {
+      result.hit_pos[2] -= 1;
+    }
+
+    return result;
   }
 }
