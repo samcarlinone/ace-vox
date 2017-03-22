@@ -8,6 +8,7 @@ import {vec3} from 'gl-matrix';
  * -dirty, {boolean} flag representing whether the chunk has changed, starts true !This flag must be changed externally
  * -locked, {boolean} flag whether data is in use by builder thread !This flag must be changed externally
  * -priority, {boolean} flag whether mesh should be prioritized in build queue !This flag must be changed externally
+ * -requireRebuild, {boolean} flag whether mesh requires a rebuild before being rendered
  * -position, {vec3}
  */
 export class Chunk {

@@ -1,5 +1,6 @@
 import {SimpleWorker} from '../graphics/simple_worker.js';
 import {Chunk} from './chunk.js';
+import operate from './operator.js';
 
 /**
  * Acts as global obj for performing chunk operations
@@ -12,6 +13,12 @@ import {Chunk} from './chunk.js';
  */
 class ChunkBuilder {
   get GEN_DATA() { return 0; } //Generate data opcode
+  get UPDATE_N() { return 32; } //Update north chunk
+  get UPDATE_S() { return 33; } //Update north chunk
+  get UPDATE_E() { return 34; } //Update north chunk
+  get UPDATE_W() { return 35; } //Update north chunk
+  get UPDATE_U() { return 36; } //Update north chunk
+  get UPDATE_D() { return 37; } //Update north chunk
 
   constructor() {
     this.curID = 0;
@@ -30,13 +37,19 @@ class ChunkBuilder {
    * update - Call every update to check for chunks with pending operations
    */
   update() {
+    var non_synchronous = [];
+
     //Check priority chunks
     for(var i=0; i<this.chunks.length; i++) {
       if(this.idle <= 0)
         break;
 
       if(this.chunks[i].priority && this.chunks[i].opQueue.length > 0 && !this.chunks[i].locked) {
-        this.assignWorker(this.chunks[i]);
+        if(this.chunks[i].opQueue[0] < 32) {
+          this.assignWorker(this.chunks[i]);
+        } else {
+          non_synchronous.push(this.chunks[i]);
+        }
       }
     }
     //Check low priority chunks
@@ -45,11 +58,31 @@ class ChunkBuilder {
         break;
 
       if(this.chunks[i].opQueue.length > 0 && !this.chunks[i].locked) {
-        this.assignWorker(this.chunks[i]);
+        if(this.chunks[i].opQueue[0] < 32) {
+          this.assignWorker(this.chunks[i]);
+        } else {
+          non_synchronous.push(this.chunks[i]);
+        }
+      }
+    }
+
+    this.nonSync(non_synchronous);
+  }
+
+  nonSync(chunk_list) {
+    var time = performance.now();
+
+    for(var i=0; i<chunk_list.length; i++) {
+      for(var k=0; k<chunk_list[i].opQueue.length; k++) {
+        if(chunk_list[i].opQueue[k] >= 32) {
+          if(operate(chunk_list[i].opQueue[k], chunk_list[i], this)) {
+            chunk_list[i].opQueue.splice(k, 1);
+            k--;
+          }
+        }
       }
     }
   }
-
 
   /**
    * assignWorker - begin processing a chunk
@@ -60,6 +93,7 @@ class ChunkBuilder {
       if(this.simpleWorkers[i].job == -1) {
         this.simpleWorkers[i].job = chunk.id;
         this.simpleWorkers[i].time = performance.now();
+        this.simpleWorkers[i].op = chunk.opQueue[0];
 
         this.simpleWorkers[i].w.postMessage(
             {
@@ -114,6 +148,25 @@ class ChunkBuilder {
 
     this.idle += 1;
     worker.job = -1;
+
+    if(worker.op == 0) {
+      //Update Chunk
+      chunk.opQueue.push(this.UPDATE_N, this.UPDATE_S, this.UPDATE_E, this.UPDATE_W, this.UPDATE_U, this.UPDATE_D);
+      //Update Neighbors
+      var c = -1;
+
+      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1], chunk.position[2]+64]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_S) };
+
+      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1], chunk.position[2]-64]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_N) };
+
+      c = chunk.world.chunkStore.getObj([chunk.position[0]+64, chunk.position[1], chunk.position[2]]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_W) };
+
+      c = chunk.world.chunkStore.getObj([chunk.position[0]-64, chunk.position[1], chunk.position[2]]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_E) };
+    }
 
     chunk.locked = false;
     chunk.opQueue.splice(0, 1);
