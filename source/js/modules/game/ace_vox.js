@@ -9,7 +9,7 @@
 class AceVox {
   constructor() {
     //TODO: Make these loaded from localStorage
-    this.CHUNK_R = 2; //Radius in chunks to load around each player
+    this.CHUNK_R = 3; //Radius in chunks to load around each player
 
     this.PROCESS_THRESHHOLD = 15; //Number of ms to allow additional processing
   }

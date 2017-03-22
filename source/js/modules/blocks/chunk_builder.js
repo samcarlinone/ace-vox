@@ -81,6 +81,9 @@ class ChunkBuilder {
           }
         }
       }
+
+      if(performance.now()-time>0.5)
+        return;
     }
   }
 
@@ -157,15 +160,16 @@ class ChunkBuilder {
 
       c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1], chunk.position[2]+64]);
       if(c !== -1) { c.opQueue.push(this.UPDATE_S) };
-
       c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1], chunk.position[2]-64]);
       if(c !== -1) { c.opQueue.push(this.UPDATE_N) };
-
-      c = chunk.world.chunkStore.getObj([chunk.position[0]+64, chunk.position[1], chunk.position[2]]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_W) };
-
       c = chunk.world.chunkStore.getObj([chunk.position[0]-64, chunk.position[1], chunk.position[2]]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_W) };
+      c = chunk.world.chunkStore.getObj([chunk.position[0]+64, chunk.position[1], chunk.position[2]]);
       if(c !== -1) { c.opQueue.push(this.UPDATE_E) };
+      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1]+64, chunk.position[2]]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_U) };
+      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1]-64, chunk.position[2]]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_D) };
     }
 
     chunk.locked = false;

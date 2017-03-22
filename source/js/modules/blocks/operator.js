@@ -78,6 +78,44 @@ function operate(op_code, chunk) {
       other_chunk.dirty = true;
 
       return true;
+
+    case ChunkBuilder.UPDATE_D:
+      var other_chunk = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1]+64, chunk.position[2]]);
+
+      if(other_chunk == -1)
+        return true;
+
+      if(other_chunk.locked)
+        return false;
+
+      for(var x=0; x<64; x++) {
+        for(var z=0; z<64; z++) {
+          other_chunk.bData[x+z*Chunk.SIZE_1 + Chunk.SIZE_2*5] = chunk.data[x + z*Chunk.SIZE_1 + 63*Chunk.SIZE_2];
+        }
+      }
+
+      other_chunk.dirty = true;
+
+      return true;
+
+    case ChunkBuilder.UPDATE_U:
+      var other_chunk = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1]-64, chunk.position[2]]);
+
+      if(other_chunk == -1)
+        return true;
+
+      if(other_chunk.locked)
+        return false;
+
+      for(var x=0; x<64; x++) {
+        for(var z=0; z<64; z++) {
+          other_chunk.bData[x+z*Chunk.SIZE_1 + Chunk.SIZE_2*4] = chunk.data[x + z*Chunk.SIZE_1];
+        }
+      }
+
+      other_chunk.dirty = true;
+
+      return true;
   }
 
   return true;
