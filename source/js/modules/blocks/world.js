@@ -181,9 +181,49 @@ export class World {
     chunk.data[this.posToBlock(pos)] = v;
     chunk.dirty = true;
 
+    if(x === 0) {
+      chunk.opQueue.push(this.UPDATE_E)
+      c = chunk.world.chunkStore.getObj([chunk.position[0]-64, chunk.position[1], chunk.position[2]]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_W) };
+    }
+    if(x === 63) {
+      chunk.opQueue.push(this.UPDATE_W)
+      c = chunk.world.chunkStore.getObj([chunk.position[0]+64, chunk.position[1], chunk.position[2]]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_E) };
+    }
+    if(y === 63) {
+      chunk.opQueue.push(this.UPDATE_D)
+      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1]-64, chunk.position[2]]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_U) };
+    }
+    if(y === 0) {
+      chunk.opQueue.push(this.UPDATE_U)
+      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1]+64, chunk.position[2]]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_D) };
+    }
+    if(z === 0) {
+      chunk.opQueue.push(this.UPDATE_S)
+      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1], chunk.position[2]-64]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_S) };
+    }
+    if(z === 63) {
+      chunk.opQueue.push(this.UPDATE_S)
+      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1], chunk.position[2]+64]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_N) };
+    }
+
     return v;
   }
 
+
+  /**
+   * raycast - Raycast against this world
+   *
+   * @param  {vec3} pos    Position !!! Must be positive vector !!!
+   * @param  {vec3} dir    Direction
+   * @param  {float} length Distance to Cast
+   * @return {Object}        Object: type (block value), hit_pos (vec3), hit_norm (vec3)
+   */
   raycast(pos, dir, length) {
     var result = {type: undefined, hit_pos: vec3.create(), hit_norm: vec3.create()};
 
