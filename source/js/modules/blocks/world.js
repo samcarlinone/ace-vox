@@ -6,9 +6,11 @@ import {PosStore} from './pos_store.js';
 import {vec3, mat4} from 'gl-matrix';
 import {Camera} from '../graphics/camera.js';
 import {Player} from '../player/player.js';
+import ChunkBuilder from './chunk_builder.js';
 import {ChunkGroup} from './chunk_group.js';
 import {traceRay} from './raycast.js';
 import MeshBuilder from '../graphics/mesh_builder.js';
+import operate from './operator.js';
 
 /**
  * Class representing a world or realm
@@ -184,9 +186,17 @@ export class World {
     x = Math.floor(pos[0])%64;
     y = Math.floor(pos[1])%64;
     z = Math.floor(pos[2])%64;
-    console.log(x, y, z);
-    if(x === 0 || x === 63 || y === 0 || y === 63 || z === 0 || z === 63) {
-      chunk.world.opQueue.push(ChunkBuilder.UPDATE_1B, [x, y, z, v]);
+
+    if(x === 0 || x === 63) {
+      chunk.opQueue.push(ChunkBuilder.UPDATE_1B, [(x%63===0)?(x===0?-1:1):0, 0, 0, x, y, z]);
+    }
+
+    if(y === 0 || y === 63) {
+      chunk.opQueue.push(ChunkBuilder.UPDATE_1B, [0, (y%63===0)?(y===0?-1:1):0, 0, x, y, z]);
+    }
+
+    if(z === 0 || z === 63) {
+      chunk.opQueue.push(ChunkBuilder.UPDATE_1B, [0, 0, (z%63===0)?(z===0?-1:1):0, x, y, z]);
     }
 
     return v;
