@@ -77,9 +77,9 @@ class ChunkBuilder {
     for(var i=0; i<chunk_list.length; i++) {
       for(var k=0; k<chunk_list[i].opQueue.length; k+=2) {
         if(chunk_list[i].opQueue[k] >= 32) {
-          if(operate(chunk_list[i].opQueue[k], operate(chunk_list[i].opQueue[k+1], chunk_list[i], this)) {
+          if(operate(chunk_list[i].opQueue[k], chunk_list[i].opQueue[k+1], chunk_list[i], this)) {
             chunk_list[i].opQueue.splice(k, 2);
-            k--;
+            k-=2;
           }
         }
       }

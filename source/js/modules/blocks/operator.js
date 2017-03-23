@@ -34,7 +34,7 @@ function operate(op_code, op_data, chunk) {
         var dir_index = getDirectionIndex(op_data[0], op_data[1], op_data[2]);
         var offset = (op_data[2] > 0) ? 63*Chunk.SIZE_1 : 0;
         for(var x=0; x<64; x++) {
-          for(var y=0; y<64; z++) {
+          for(var y=0; y<64; y++) {
             other_chunk.bData[x+y*Chunk.SIZE_1 + Chunk.SIZE_2*dir_index] = chunk.data[x + offset + y*Chunk.SIZE_2];
           }
         }
