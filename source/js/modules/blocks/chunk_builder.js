@@ -168,17 +168,17 @@ class ChunkBuilder {
       var c = -1;
 
       c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1], chunk.position[2]+64]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_B,[0,0,1]) };
-      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1], chunk.position[2]-64]);
       if(c !== -1) { c.opQueue.push(this.UPDATE_B,[0,0,-1]) };
+      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1], chunk.position[2]-64]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_B,[0,0,1]) };
       c = chunk.world.chunkStore.getObj([chunk.position[0]-64, chunk.position[1], chunk.position[2]]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_B,[-1,0,0]) };
-      c = chunk.world.chunkStore.getObj([chunk.position[0]+64, chunk.position[1], chunk.position[2]]);
       if(c !== -1) { c.opQueue.push(this.UPDATE_B,[1,0,0]) };
+      c = chunk.world.chunkStore.getObj([chunk.position[0]+64, chunk.position[1], chunk.position[2]]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_B,[-1,0,0]) };
       c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1]+64, chunk.position[2]]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_B,[0,1,0]) };
-      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1]-64, chunk.position[2]]);
       if(c !== -1) { c.opQueue.push(this.UPDATE_B,[0,-1,0]) };
+      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1]-64, chunk.position[2]]);
+      if(c !== -1) { c.opQueue.push(this.UPDATE_B,[0,1,0]) };
     }
 
     chunk.locked = false;
