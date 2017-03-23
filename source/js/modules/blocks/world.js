@@ -181,35 +181,12 @@ export class World {
     chunk.data[this.posToBlock(pos)] = v;
     chunk.dirty = true;
 
-    if(x === 0) {
-      chunk.opQueue.push(this.UPDATE_E)
-      c = chunk.world.chunkStore.getObj([chunk.position[0]-64, chunk.position[1], chunk.position[2]]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_W) };
-    }
-    if(x === 63) {
-      chunk.opQueue.push(this.UPDATE_W)
-      c = chunk.world.chunkStore.getObj([chunk.position[0]+64, chunk.position[1], chunk.position[2]]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_E) };
-    }
-    if(y === 63) {
-      chunk.opQueue.push(this.UPDATE_D)
-      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1]-64, chunk.position[2]]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_U) };
-    }
-    if(y === 0) {
-      chunk.opQueue.push(this.UPDATE_U)
-      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1]+64, chunk.position[2]]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_D) };
-    }
-    if(z === 0) {
-      chunk.opQueue.push(this.UPDATE_S)
-      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1], chunk.position[2]-64]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_S) };
-    }
-    if(z === 63) {
-      chunk.opQueue.push(this.UPDATE_S)
-      c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1], chunk.position[2]+64]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_N) };
+    x = Math.floor(pos[0])%64;
+    y = Math.floor(pos[1])%64;
+    z = Math.floor(pos[2])%64;
+    console.log(x, y, z);
+    if(x === 0 || x === 63 || y === 0 || y === 63 || z === 0 || z === 63) {
+      chunk.world.opQueue.push(ChunkBuilder.UPDATE_1B, [x, y, z, v]);
     }
 
     return v;

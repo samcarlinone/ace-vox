@@ -33,7 +33,7 @@ export class ChunkGroup {
           var chunk = ChunkBuilder.createChunk(this.world);
           vec3.add(chunk.position, this.lastPos, vec3.fromValues(x*64, y*64, z*64));
 
-          chunk.opQueue.push(ChunkBuilder.GEN_DATA);
+          chunk.opQueue.push(ChunkBuilder.GEN_DATA,-1);
           chunk.requireRebuild = true;
           chunk.dirty = false;
 
@@ -83,7 +83,7 @@ export class ChunkGroup {
             for(var i=index; i < this.chunks.length; i++) {
               if(vec3.distance(this.chunks[i].position, this.lastPos) > AceVox.CHUNK_R*64) {
                 this.world.chunkStore.moveObj(this.chunks[i], this.c_pos[0], this.c_pos[1], this.c_pos[2]);
-                this.chunks[i].opQueue.push(ChunkBuilder.GEN_DATA);
+                this.chunks[i].opQueue.push(ChunkBuilder.GEN_DATA,-1);
                 this.chunks[i].requireRebuild = true;
 
                 index = i;

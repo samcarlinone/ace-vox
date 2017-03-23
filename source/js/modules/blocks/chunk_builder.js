@@ -14,11 +14,13 @@ import operate from './operator.js';
 class ChunkBuilder {
   get GEN_DATA() { return 0; } //Generate data opcode
   get UPDATE_N() { return 32; } //Update north chunk
-  get UPDATE_S() { return 33; } //Update north chunk
-  get UPDATE_E() { return 34; } //Update north chunk
-  get UPDATE_W() { return 35; } //Update north chunk
-  get UPDATE_U() { return 36; } //Update north chunk
-  get UPDATE_D() { return 37; } //Update north chunk
+  get UPDATE_S() { return 33; } //Update south chunk
+  get UPDATE_E() { return 34; } //Update east chunk
+  get UPDATE_W() { return 35; } //Update west chunk
+  get UPDATE_U() { return 36; } //Update up chunk
+  get UPDATE_D() { return 37; } //Update down chunk
+  get UPDATE_B() { return 38; } //Update border blocks
+  get UPDATE_1B() { return 39; } //Update single border block
 
   constructor() {
     this.curID = 0;
@@ -73,10 +75,10 @@ class ChunkBuilder {
     var time = performance.now();
 
     for(var i=0; i<chunk_list.length; i++) {
-      for(var k=0; k<chunk_list[i].opQueue.length; k++) {
+      for(var k=0; k<chunk_list[i].opQueue.length; k+=2) {
         if(chunk_list[i].opQueue[k] >= 32) {
-          if(operate(chunk_list[i].opQueue[k], chunk_list[i], this)) {
-            chunk_list[i].opQueue.splice(k, 1);
+          if(operate(chunk_list[i].opQueue[k], operate(chunk_list[i].opQueue[k+1], chunk_list[i], this)) {
+            chunk_list[i].opQueue.splice(k, 2);
             k--;
           }
         }
@@ -154,22 +156,29 @@ class ChunkBuilder {
 
     if(worker.op == 0) {
       //Update Chunk
-      chunk.opQueue.push(this.UPDATE_N, this.UPDATE_S, this.UPDATE_E, this.UPDATE_W, this.UPDATE_U, this.UPDATE_D);
+      chunk.opQueue.push(
+        this.UPDATE_B,[-1, 0, 0],
+        this.UPDATE_B,[ 1, 0, 0],
+        this.UPDATE_B,[ 0,-1, 0],
+        this.UPDATE_B,[ 0, 1, 0],
+        this.UPDATE_B,[ 0, 0,-1],
+        this.UPDATE_B,[ 0, 0, 1]
+      );
       //Update Neighbors
       var c = -1;
 
       c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1], chunk.position[2]+64]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_S) };
+      if(c !== -1) { c.opQueue.push(this.UPDATE_B,[0,0,1]) };
       c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1], chunk.position[2]-64]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_N) };
+      if(c !== -1) { c.opQueue.push(this.UPDATE_B,[0,0,-1]) };
       c = chunk.world.chunkStore.getObj([chunk.position[0]-64, chunk.position[1], chunk.position[2]]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_W) };
+      if(c !== -1) { c.opQueue.push(this.UPDATE_B,[-1,0,0]) };
       c = chunk.world.chunkStore.getObj([chunk.position[0]+64, chunk.position[1], chunk.position[2]]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_E) };
+      if(c !== -1) { c.opQueue.push(this.UPDATE_B,[1,0,0]) };
       c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1]+64, chunk.position[2]]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_U) };
+      if(c !== -1) { c.opQueue.push(this.UPDATE_B,[0,1,0]) };
       c = chunk.world.chunkStore.getObj([chunk.position[0], chunk.position[1]-64, chunk.position[2]]);
-      if(c !== -1) { c.opQueue.push(this.UPDATE_D) };
+      if(c !== -1) { c.opQueue.push(this.UPDATE_B,[0,-1,0]) };
     }
 
     chunk.locked = false;
