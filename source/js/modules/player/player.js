@@ -62,7 +62,7 @@ export class Player {
       }
     }
 
-    var result = this.world.raycast(this.pos, this.lookVec, 6);
+    var result = this.world.raycast(this.pos, this.lookVec, 8);
 
     if(result.type !== undefined) {
       this.outline.doRender = true;
@@ -73,6 +73,11 @@ export class Player {
 
       if(this.controller.getState('M1') && this.mouse_cooldown === 15) {
         this.world.setBlock(result.hit_pos, Chunk.SUN_AIR);
+        this.mouse_cooldown = 14;
+      }
+
+      if(this.controller.getState('M2') && this.mouse_cooldown === 15) {
+        this.world.setBlock(result.hit_pos[0]+result.hit_norm[0], result.hit_pos[1]+result.hit_norm[1], result.hit_pos[2]+result.hit_norm[2], 1);
         this.mouse_cooldown = 14;
       }
     } else {

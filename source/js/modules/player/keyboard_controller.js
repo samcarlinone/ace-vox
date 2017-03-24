@@ -4,7 +4,7 @@ class KeyboardController {
 
   constructor() {
     //Keyboard stuff
-    this.state = {vx: [0], vy: [0], vz: [0], M1: [0]};
+    this.state = {vx: [0], vy: [0], vz: [0], M1: [0], M2: [0]};
     this.key = [
       {code: [65], val: -1, prop: "vx"},
       {code: [69], val: -1, prop: "vy"},
@@ -12,7 +12,8 @@ class KeyboardController {
       {code: [68], val:  1, prop: "vx"},
       {code: [81], val:  1, prop: "vy"},
       {code: [83], val:  1, prop: "vz"},
-      {code: [KeyboardController.M1], val: 1, prop: "M1"}
+      {code: [KeyboardController.M1], val: 1, prop: "M1"},
+      {code: [KeyboardController.M2], val: 1, prop: "M2"}
     ];
 
     // W: 87
