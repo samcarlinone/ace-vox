@@ -44,7 +44,7 @@ export class Player {
     vec3.add(this.pos, this.pos, this.tMove);
 
     //Look
-    this.vRot = Math.max(-80*Math.PI/180, Math.min(this.vRot, 80*Math.PI/180));
+    this.vRot = Math.max(-85*Math.PI/180, Math.min(this.vRot, 85*Math.PI/180));
 
     this.lookVec[0] = Math.cos(this.hRot) * Math.cos(this.vRot);
     this.lookVec[1] = Math.sin(this.vRot);
