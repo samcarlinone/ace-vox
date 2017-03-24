@@ -80,7 +80,7 @@ function init() {
   gl.enable(gl.CULL_FACE);
 
   //Load Resources
-  AceVox.shader_cache = ShaderCache.load(['trs', 'chunk_basic'],
+  AceVox.shader_cache = ShaderCache.load(['trs', 'chunk_basic', 'outline'],
   () => {
     TextureCache.load([{name: "atlas", imgs:["dirt", "dirtTop", "dirtSide", "leaves"]}], loadingComplete);
   }

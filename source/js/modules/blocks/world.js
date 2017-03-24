@@ -75,6 +75,8 @@ export class World {
 
   render() {
     var gl = AceVox.gl;
+
+    //Render Blocks
     gl.useProgram(this.program);
     gl.uniform3fv(this.sunVecLocation, vec3.fromValues(Math.sqrt(0.2), -Math.sqrt(0.5), Math.sqrt(0.3)));
     gl.uniform3fv(this.sunColLocation, vec3.fromValues(1, 1, 1));
@@ -93,6 +95,11 @@ export class World {
           }
         }
       }
+    }
+
+    //Render Players
+    for(var i=0; i<this.players.length; i++) {
+      this.players[i].render(gl);
     }
   }
 
@@ -186,7 +193,7 @@ export class World {
     x = Math.floor(pos[0])%64;
     y = Math.floor(pos[1])%64;
     z = Math.floor(pos[2])%64;
-
+    console.log(x, y, z);
     if(x === 0 || x === 63) {
       chunk.opQueue.push(ChunkBuilder.UPDATE_1B, [(x%63===0)?(x===0?-1:1):0, 0, 0, x, y, z]);
     }

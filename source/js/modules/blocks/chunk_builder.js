@@ -13,14 +13,11 @@ import operate from './operator.js';
  */
 class ChunkBuilder {
   get GEN_DATA() { return 0; } //Generate data opcode
-  get UPDATE_N() { return 32; } //Update north chunk
-  get UPDATE_S() { return 33; } //Update south chunk
-  get UPDATE_E() { return 34; } //Update east chunk
-  get UPDATE_W() { return 35; } //Update west chunk
-  get UPDATE_U() { return 36; } //Update up chunk
-  get UPDATE_D() { return 37; } //Update down chunk
-  get UPDATE_B() { return 38; } //Update border blocks
-  get UPDATE_1B() { return 39; } //Update single border block
+  get UPDATE_1B() { return 32; } //Update single border block
+  get UPDATE_B() { return 64; } //Update border blocks
+
+  get NON_SYNC() { return 32; } //Last sync task
+  get SMALL() { return 64; } //Last small task
 
   constructor() {
     this.curID = 0;
@@ -47,10 +44,21 @@ class ChunkBuilder {
         break;
 
       if(this.chunks[i].priority && this.chunks[i].opQueue.length > 0 && !this.chunks[i].locked) {
-        if(this.chunks[i].opQueue[0] < 32) {
+        if(this.chunks[i].opQueue[0] < this.NON_SYNC) {
           this.assignWorker(this.chunks[i]);
         } else {
-          non_synchronous.push(this.chunks[i]);
+          if(this.chunks[i].opQueue[0] < this.SMALL) {
+            var cont = true;
+            while(cont && this.chunks[i].opQueue[0] < this.SMALL) {
+              if(operate(this.chunks[i].opQueue[0], this.chunks[i].opQueue[1], this.chunks[i], this))
+                this.chunks[i].opQueue.splice(0, 2);
+              else {
+                cont = false;
+              }
+            }
+          } else {
+            non_synchronous.push(this.chunks[i]);
+          }
         }
       }
     }
@@ -60,10 +68,23 @@ class ChunkBuilder {
         break;
 
       if(this.chunks[i].opQueue.length > 0 && !this.chunks[i].locked) {
-        if(this.chunks[i].opQueue[0] < 32) {
+        if(this.chunks[i].opQueue[0] < this.NON_SYNC) {
           this.assignWorker(this.chunks[i]);
         } else {
-          non_synchronous.push(this.chunks[i]);
+          if(this.chunks[i].opQueue[0] < this.SMALL) {
+            var cont = true;
+            while(cont && this.chunks[i].opQueue[0] < this.SMALL) {
+              if(operate(this.chunks[i].opQueue[0], this.chunks[i].opQueue[1], this.chunks[i], this)) {
+                this.chunks[i].opQueue.splice(0, 2);
+                console.log("Fast");
+              } else {
+                cont = false;
+                console.log("Slow");
+              }
+            }
+          } else {
+            non_synchronous.push(this.chunks[i]);
+          }
         }
       }
     }
