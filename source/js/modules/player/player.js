@@ -2,6 +2,7 @@ import {vec3, mat4} from 'gl-matrix';
 import KeyboardController from './keyboard_controller.js';
 import {Chunk} from '../blocks/chunk.js';
 import {BlockOutline} from '../graphics/block_outline.js';
+import Collision from '../game/collision.js';
 
 export class Player {
   constructor(world, camera) {
@@ -42,6 +43,9 @@ export class Player {
     vec3.mul(this.tMove, this.tMove, this.tSpeed);
     vec3.rotateY(this.tMove, this.tMove, this.tOrigin, (3*Math.PI/2)-this.hRot);
     vec3.add(this.pos, this.pos, this.tMove);
+
+    //Use tSpeed as temp
+
 
     //Look
     this.vRot = Math.max(-85*Math.PI/180, Math.min(this.vRot, 85*Math.PI/180));

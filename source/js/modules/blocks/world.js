@@ -193,7 +193,7 @@ export class World {
     x = Math.floor(pos[0])%64;
     y = Math.floor(pos[1])%64;
     z = Math.floor(pos[2])%64;
-    console.log(x, y, z);
+
     if(x === 0 || x === 63) {
       chunk.opQueue.push(ChunkBuilder.UPDATE_1B, [(x%63===0)?(x===0?-1:1):0, 0, 0, x, y, z]);
     }
