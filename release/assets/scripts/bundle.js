@@ -9067,7 +9067,7 @@ var Player = exports.Player = function () {
     this.SPEED = 0.01;
     this.RENDERED = true;
     //Properties
-    this.pos = _glMatrix.vec3.fromValues(1000, 45, 1000);
+    this.pos = _glMatrix.vec3.fromValues(1000, 128, 1000);
     this.tMove = _glMatrix.vec3.create();
     this.tSpeed = _glMatrix.vec3.create();
     this.tOrigin = _glMatrix.vec3.fromValues(0, 0, 0);
