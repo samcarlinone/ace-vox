@@ -10,7 +10,7 @@ export class Player {
     this.SPEED = 0.01;
     this.RENDERED = true;
     //Properties
-    this.pos = vec3.fromValues(1000, 45, 1000);
+    this.pos = vec3.fromValues(1000, 128, 1000);
     this.tMove = vec3.create();
     this.tSpeed = vec3.create();
     this.tOrigin = vec3.fromValues(0, 0, 0);
