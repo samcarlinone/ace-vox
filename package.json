@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A webgl voxel game",
   "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
   "repository": "https://github.com/samcarlinone/ace-vox.git",
   "author": "samcarlinone <samcarlinone@gmail.com>",
   "license": "UNLICENSED",
