@@ -45,7 +45,24 @@ export class Player {
     vec3.add(this.pos, this.pos, this.tMove);
 
     //Use tSpeed as temp
+    vec3.set(this.tSpeed, Math.floor(this.pos[0]), Math.floor(this.pos[1]), Math.floor(this.pos[2]));
 
+    if(this.tMove[1] !== 0) {
+      for(var x=-1; x<2; x++) {
+        for(var z=-1; z<2; z++) {
+          var bPos = [this.tSpeed[0]+x, this.tSpeed[1]+Math.sign(this.tMove[1]), this.tSpeed[2]+z];
+          var val = this.world.getBlock(bPos);
+
+          if(val > 0) {
+            this.result = vec3.create();
+
+            if(Collision.boxSphere(bPos, [bPos[0]+1, bPos[1]+1, bPos[2]+1], this.pos, 0.5, this.result)) {
+              vec3.add(this.pos, this.pos, this.result);
+            }
+          }
+        }
+      }
+    }
 
     //Look
     this.vRot = Math.max(-85*Math.PI/180, Math.min(this.vRot, 85*Math.PI/180));

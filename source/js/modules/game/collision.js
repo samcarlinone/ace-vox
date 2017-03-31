@@ -7,8 +7,8 @@ class Collision {
    * @param  {vec3} c1  lower corner of box !!!must be less than c2!!!
    * @param  {vec3} c2  upper corner of box
    * @param  {vec3} s1  cylinder center
-   * @param  {vec3} r   cylinder radius
-   * @param  {vec3} h   cylinder height
+   * @param  {float} r   cylinder radius
+   * @param  {flaot} h   cylinder height
    * @param  {vec3} out restitution vector
    * @return {boolean}     whether collision occured
    */
@@ -52,7 +52,7 @@ class Collision {
    * @param  {vec3} c1  lower corner of box !!!must be less than c2!!!
    * @param  {vec3} c2  upper corner of box
    * @param  {vec3} s1  sphere center
-   * @param  {vec3} r   sphere radius
+   * @param  {float} r   sphere radius
    * @param  {vec3} out restitution vector
    * @return {boolean}     whether collision occured
    */
