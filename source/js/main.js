@@ -46,22 +46,6 @@ function init() {
   AceVox.ui.style.width = AceVox.game_size[0]+"px";
   AceVox.ui.style.height = AceVox.game_size[1]+"px";
 
-  //Add event listeners
-  AceVox.main.onclick = () => {
-    AceVox.main.requestPointerLock();
-  }
-
-  document.addEventListener('pointerlockchange', () => {
-    if (document.pointerLockElement == AceVox.main) {
-      document.addEventListener("mousemove", mouseMove, false);
-    } else {
-      document.removeEventListener("mousemove", mouseMove, false);
-    }
-  }, false);
-
-  window.addEventListener('keydown', keyDown, false);
-  window.addEventListener('keyup', keyUp, false);
-
   //Initialize WebGL2
   var gl = AceVox.can.getContext( 'webgl2', { antialias: false } );
   var isWebGL2 = !!gl;
@@ -98,6 +82,22 @@ function loadingComplete() {
   //Initialize game
   currentModule = new BasicModule();
   window.currentModule = currentModule;
+
+  //Add event listeners
+  AceVox.main.onclick = () => {
+    AceVox.main.requestPointerLock();
+  }
+
+  document.addEventListener('pointerlockchange', () => {
+    if (document.pointerLockElement == AceVox.main) {
+      document.addEventListener("mousemove", mouseMove, false);
+    } else {
+      document.removeEventListener("mousemove", mouseMove, false);
+    }
+  }, false);
+
+  window.addEventListener('keydown', keyDown, false);
+  window.addEventListener('keyup', keyUp, false);
 
   //Begin loop
   requestAnimationFrame(mainLoop);
