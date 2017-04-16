@@ -113,11 +113,37 @@ export class Player {
     vec3.set(this.tSpeed, Math.floor(this.pos[0]), Math.floor(this.pos[1]), Math.floor(this.pos[2]));
     vec3.set(this._cDir, this.pos[0]%1>=0.5?1:-1, this.pos[1]%1>=0.5?1:-1, this.pos[2]%1>=0.5?1:-1);
 
+    var origX = this.pos[0];
+    var origY = this.pos[1];
+    var origZ = this.pos[2];
+
+    var score = this.resolveCollisionXZ();
+    var resY = this.resolveCollisionY();
+
+    this.pos[0] = origX;
+    this.pos[2] = origZ;
+
+    var resY2 = this.resolveCollisionY();
+    this.pos[1] = (resY2===undefined?this.pos[1]:resY2);
+    var score2 = this.resolveCollisionXZ();
+
+    if((resY2===undefined?0:1)+score2 > (resY===undefined?0:1)+score) {
+      this.pos[0] = origX;
+      this.pos[1] = origY;
+      this.pos[2] = origZ;
+
+      this.resolveCollisionXZ();
+      resY2 = this.resolveCollisionY();
+      this.pos[1] = (resY2===undefined?this.pos[1]:resY2);
+    }
+  }
+
+  resolveCollisionXZ() {
     var resX = this.checkCollisionX();
     var resZ = this.checkCollisionZ();
 
     if(resX === undefined && resZ === undefined) {
-      return;
+      return 0;
     }
 
     if(resX !== undefined && resZ !== undefined) {
@@ -127,27 +153,60 @@ export class Player {
       this.pos[0] = resX;
 
       if(this.checkCollisionZ() === undefined) {
-        return;
+        return 1;
       }
 
       this.pos[0] = orgX;
       this.pos[2] = resZ;
 
       if(this.checkCollisionX() === undefined) {
-        return;
+        return 1;
       }
 
       this.pos[0] = resX;
-      return;
+      return 2;
     }
 
     this.pos[0] = resX?resX:this.pos[0];
     this.pos[2] = resZ?resZ:this.pos[2];
+
+    return 1;
+  }
+
+  resolveCollisionY() {
+    var xPer = this.pos[0]%1;
+    var zPer = this.pos[2]%1;
+
+    if(this.pos[1]%1 < 0.5) {
+      //Check below
+      for(var x=(xPer<0.375?-1:0); x<(xPer>0.625?2:1); x++) {
+        for(var z=(zPer<0.375?-1:0); z<(zPer>0.625?2:1); z++) {
+          var bPos = vec3.fromValues(this.tSpeed[0]+x, this.tSpeed[1]-2, this.tSpeed[2]+z);
+          if(this.world.getBlock(bPos)) {
+            return this.tSpeed[1]+0.5;
+          }
+        }
+      }
+    }
+
+    if(this.pos[1]%1 > 0.75) {
+      //Check above
+      for(var x=(xPer<0.375?-1:0); x<(xPer>0.625?2:1); x++) {
+        for(var z=(zPer<0.375?-1:0); z<(zPer>0.625?2:1); z++) {
+          var bPos = vec3.fromValues(this.tSpeed[0]+x, this.tSpeed[1]+1, this.tSpeed[2]+z);
+          if(this.world.getBlock(bPos)) {
+            return this.tSpeed[1]+0.75;
+          }
+        }
+      }
+    }
+
+    return undefined;
   }
 
   checkCollisionX() {
     if(this.pos[0]%1<0.375 || 0.625<this.pos[0]%1) {
-      for(var i=-1; i<(this.pos[1]%1>=0.75?2:1); i++) {
+      for(var i=(this.pos[1]%1<0.5?-2:-1); i<(this.pos[1]%1>0.75?2:1); i++) {
         var bPos = vec3.fromValues(this.tSpeed[0]+this._cDir[0], this.tSpeed[1]+i, this.tSpeed[2]);
         var corrected = this.tSpeed[0]+(this._cDir[0]===-1?0.375:0.625);
         if(this.world.getBlock(bPos)) {
@@ -175,7 +234,7 @@ export class Player {
 
   checkCollisionZ() {
     if(this.pos[2]%1<0.375 || 0.625<this.pos[2]%1) {
-      for(var i=-1; i<(this.pos[1]%1>=0.75?2:1); i++) {
+      for(var i=(this.pos[1]%1<0.5?-2:-1); i<(this.pos[1]%1>0.75?2:1); i++) {
         var bPos = vec3.fromValues(this.tSpeed[0], this.tSpeed[1]+i, this.tSpeed[2]+this._cDir[2]);
         var corrected = this.tSpeed[2]+(this._cDir[2]===-1?0.375:0.625);
         if(this.world.getBlock(bPos)) {
