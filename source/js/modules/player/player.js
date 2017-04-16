@@ -14,6 +14,7 @@ export class Player {
     this.tMove = vec3.create();
     this.tSpeed = vec3.create();
     this.tOrigin = vec3.fromValues(0, 0, 0);
+    this.result = vec3.create();
 
     this.hRot = 0;
     this.vRot = 0;
@@ -34,36 +35,12 @@ export class Player {
 
     //Internal Variables
     this.mouse_cooldown = 15;
+    this._cDir = vec3.create();
+
+    this.lookDir = document.querySelector("#lookDir");
   }
 
   update(delta) {
-    //Move
-    vec3.set(this.tMove, this.controller.getState('vx'), this.controller.getState('vy'), this.controller.getState('vz'));
-    vec3.set(this.tSpeed, this.SPEED * delta, this.SPEED * delta, this.SPEED * delta);
-    vec3.mul(this.tMove, this.tMove, this.tSpeed);
-    vec3.rotateY(this.tMove, this.tMove, this.tOrigin, (3*Math.PI/2)-this.hRot);
-    vec3.add(this.pos, this.pos, this.tMove);
-
-    //Use tSpeed as temp
-    vec3.set(this.tSpeed, Math.floor(this.pos[0]), Math.floor(this.pos[1]), Math.floor(this.pos[2]));
-
-    if(this.tMove[1] !== 0) {
-      for(var x=-1; x<2; x++) {
-        for(var z=-1; z<2; z++) {
-          var bPos = [this.tSpeed[0]+x, this.tSpeed[1]+Math.sign(this.tMove[1]), this.tSpeed[2]+z];
-          var val = this.world.getBlock(bPos);
-
-          if(val > 0) {
-            this.result = vec3.create();
-
-            if(Collision.boxSphere(bPos, [bPos[0]+1, bPos[1]+1, bPos[2]+1], this.pos, 0.5, this.result)) {
-              vec3.add(this.pos, this.pos, this.result);
-            }
-          }
-        }
-      }
-    }
-
     //Look
     this.vRot = Math.max(-85*Math.PI/180, Math.min(this.vRot, 85*Math.PI/180));
 
@@ -73,6 +50,18 @@ export class Player {
 
     if(this.camera)
       vec3.add(this.outline.pos, this.pos, vec3.fromValues(2, 0, 0));
+
+    //DEBUG: Look dir
+    this.lookDir.innerText = vec3.dot(vec3.fromValues(1, 0, 0), this.lookVec);
+
+    //Move
+    vec3.set(this.tMove, this.controller.getState('vx'), this.controller.getState('vy'), this.controller.getState('vz'));
+    vec3.set(this.tSpeed, this.SPEED * delta, this.SPEED * delta, this.SPEED * delta);
+    vec3.mul(this.tMove, this.tMove, this.tSpeed);
+    vec3.rotateY(this.tMove, this.tMove, this.tOrigin, (3*Math.PI/2)-this.hRot);
+    vec3.add(this.pos, this.pos, this.tMove);
+
+    this.checkCollision();
 
     //Raycast Testing
     if(this.mouse_cooldown < 15) {
@@ -118,5 +107,97 @@ export class Player {
       gl.uniformMatrix4fv(this.outline.mvpLocation, false, MVP);
       this.outline.render(this.world, this.pos);
     }
+  }
+
+  checkCollision() {
+    vec3.set(this.tSpeed, Math.floor(this.pos[0]), Math.floor(this.pos[1]), Math.floor(this.pos[2]));
+    vec3.set(this._cDir, this.pos[0]%1>=0.5?1:-1, this.pos[1]%1>=0.5?1:-1, this.pos[2]%1>=0.5?1:-1);
+
+    var resX = this.checkCollisionX();
+    var resZ = this.checkCollisionZ();
+
+    if(resX === undefined && resZ === undefined) {
+      return;
+    }
+
+    if(resX !== undefined && resZ !== undefined) {
+      //Resolve if possible
+      var orgX = this.pos[0];
+
+      this.pos[0] = resX;
+
+      if(this.checkCollisionZ() === undefined) {
+        return;
+      }
+
+      this.pos[0] = orgX;
+      this.pos[2] = resZ;
+
+      if(this.checkCollisionX() === undefined) {
+        return;
+      }
+
+      this.pos[0] = resX;
+      return;
+    }
+
+    this.pos[0] = resX?resX:this.pos[0];
+    this.pos[2] = resZ?resZ:this.pos[2];
+  }
+
+  checkCollisionX() {
+    if(this.pos[0]%1<0.375 || 0.625<this.pos[0]%1) {
+      for(var i=-1; i<(this.pos[1]%1>=0.75?2:1); i++) {
+        var bPos = vec3.fromValues(this.tSpeed[0]+this._cDir[0], this.tSpeed[1]+i, this.tSpeed[2]);
+        var corrected = this.tSpeed[0]+(this._cDir[0]===-1?0.375:0.625);
+        if(this.world.getBlock(bPos)) {
+          return corrected;
+        }
+
+        if(this.pos[2]%1<0.375) {
+          var bPos = vec3.fromValues(this.tSpeed[0]+this._cDir[0], this.tSpeed[1]+i, this.tSpeed[2]-1);
+          if(this.world.getBlock(bPos)) {
+            return corrected
+          }
+        }
+
+        if(this.pos[2]%1>0.625) {
+          var bPos = vec3.fromValues(this.tSpeed[0]+this._cDir[0], this.tSpeed[1]+i, this.tSpeed[2]+1);
+          if(this.world.getBlock(bPos)) {
+            return corrected;
+          }
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  checkCollisionZ() {
+    if(this.pos[2]%1<0.375 || 0.625<this.pos[2]%1) {
+      for(var i=-1; i<(this.pos[1]%1>=0.75?2:1); i++) {
+        var bPos = vec3.fromValues(this.tSpeed[0], this.tSpeed[1]+i, this.tSpeed[2]+this._cDir[2]);
+        var corrected = this.tSpeed[2]+(this._cDir[2]===-1?0.375:0.625);
+        if(this.world.getBlock(bPos)) {
+          return corrected;
+        }
+
+        if(this.pos[0]%1<0.375) {
+          var bPos = vec3.fromValues(this.tSpeed[0]-1, this.tSpeed[1]+i, this.tSpeed[2]+this._cDir[2]);
+          if(this.world.getBlock(bPos)) {
+            return corrected;
+          }
+        }
+
+        if(this.pos[0]%1>0.625) {
+          var bPos = vec3.fromValues(this.tSpeed[0]+1, this.tSpeed[1]+i, this.tSpeed[2]+this._cDir[2]);
+          if(this.world.getBlock(bPos)) {
+            return corrected;
+          }
+        }
+      }
+    }
+
+    return undefined;
   }
 }
