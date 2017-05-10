@@ -61,7 +61,7 @@ export class Player {
     vec3.rotateY(this.tMove, this.tMove, this.tOrigin, (3*Math.PI/2)-this.hRot);
     vec3.add(this.pos, this.pos, this.tMove);
 
-    this.checkCollision();
+    this.resolveCollision();
 
     //Raycast Testing
     if(this.mouse_cooldown < 15) {
@@ -88,6 +88,10 @@ export class Player {
 
       if(this.controller.getState('M2') && this.mouse_cooldown === 15) {
         this.world.setBlock(result.hit_pos[0]+result.hit_norm[0], result.hit_pos[1]+result.hit_norm[1], result.hit_pos[2]+result.hit_norm[2], 1);
+
+        if(this.checkCollisionX() !== undefined || this.checkCollisionY() !== undefined || this.checkCollisionZ() !== undefined)
+          this.world.setBlock(result.hit_pos[0]+result.hit_norm[0], result.hit_pos[1]+result.hit_norm[1], result.hit_pos[2]+result.hit_norm[2], Chunk.SUN_AIR);
+
         this.mouse_cooldown = 14;
       }
     } else {
@@ -109,7 +113,7 @@ export class Player {
     }
   }
 
-  checkCollision() {
+  resolveCollision() {
     vec3.set(this.tSpeed, Math.floor(this.pos[0]), Math.floor(this.pos[1]), Math.floor(this.pos[2]));
     vec3.set(this._cDir, this.pos[0]%1>=0.5?1:-1, this.pos[1]%1>=0.5?1:-1, this.pos[2]%1>=0.5?1:-1);
 
@@ -118,12 +122,12 @@ export class Player {
     var origZ = this.pos[2];
 
     var score = this.resolveCollisionXZ();
-    var resY = this.resolveCollisionY();
+    var resY = this.checkCollisionY();
 
     this.pos[0] = origX;
     this.pos[2] = origZ;
 
-    var resY2 = this.resolveCollisionY();
+    var resY2 = this.checkCollisionY();
     this.pos[1] = (resY2===undefined?this.pos[1]:resY2);
     var score2 = this.resolveCollisionXZ();
 
@@ -133,7 +137,7 @@ export class Player {
       this.pos[2] = origZ;
 
       this.resolveCollisionXZ();
-      resY2 = this.resolveCollisionY();
+      resY2 = this.checkCollisionY();
       this.pos[1] = (resY2===undefined?this.pos[1]:resY2);
     }
   }
@@ -173,7 +177,7 @@ export class Player {
     return 1;
   }
 
-  resolveCollisionY() {
+  checkCollisionY() {
     var xPer = this.pos[0]%1;
     var zPer = this.pos[2]%1;
 
@@ -185,6 +189,16 @@ export class Player {
           if(this.world.getBlock(bPos)) {
             return this.tSpeed[1]+0.5;
           }
+        }
+      }
+    }
+
+    //Check middle
+    for(var x=(xPer<0.375?-1:0); x<(xPer>0.625?2:1); x++) {
+      for(var z=(zPer<0.375?-1:0); z<(zPer>0.625?2:1); z++) {
+        var bPos = vec3.fromValues(this.tSpeed[0]+x, this.tSpeed[1], this.tSpeed[2]+z);
+        if(this.world.getBlock(bPos)) {
+          return 0;
         }
       }
     }
