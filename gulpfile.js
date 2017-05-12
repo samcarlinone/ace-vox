@@ -73,7 +73,8 @@ gulp.task('watch', ['build-dev'], function() {
 
 gulp.task('serve', ['build-dev'], function () {
   nodemon({
-    script: 'app.js'
+    script: 'app.js',
+    ignore: ['source/','public/']
   }).on('restart', function () {
     console.log('restarted!')
   })
