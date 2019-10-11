@@ -24,7 +24,7 @@ class ShaderCache {
         var client = new XMLHttpRequest();
         var name = names[Math.floor(i/2)];
         var type = (i%2==0)?'vert':'frag';
-        client.open('GET', `/shaders/${name}_${type}.glsl`);
+        client.open('GET', `./shaders/${name}_${type}.glsl`);
         client.onload = () => {
           if(client.status != 200)
             reject("Loading error");
